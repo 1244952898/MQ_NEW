@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Http;
 using mq.application.common;
+using mq.application.webmvc;
+using System.Web.Optimization;
 
 namespace mq.ui.WageAttendance
 {

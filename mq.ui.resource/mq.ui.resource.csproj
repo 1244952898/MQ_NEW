@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -3565,6 +3566,7 @@
     <Content Include="js\AngularJs\angular.js" />
     <Content Include="js\AngularJs\angular.min.js" />
     <Content Include="Web.config" />
+    <None Include="说明\说明.text" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">

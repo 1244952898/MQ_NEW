@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="http://localhost:12345/resource/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div>
+    <span>性别</span>
+    <input type="radio" name="gender" value="1" checked="checked">&nbsp;男&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="gender" value="2">&nbsp;女
+</div>
+    <input type="button" value="aaaaa" onclick="aa();"/>
+<script type="text/javascript">
+    function aa() {
+        var gender = $("input[name='gender']:checked").val();
+        alert(gender);
+    }
+   
+</script>
+</body>
+</html>

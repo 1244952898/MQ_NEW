@@ -124,6 +124,17 @@
           <Property Name="AddTime" Type="datetime" />
           <Property Name="UpdateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="T_BG_Position">
+          <Key>
+            <PropertyRef Name="PositionId" />
+          </Key>
+          <Property Name="PositionId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DepartmentId" Type="bigint" Nullable="false" />
+          <Property Name="Lvl" Type="bigint" Nullable="false" />
+          <Property Name="AddTime" Type="datetime" Nullable="false" />
+          <Property Name="IsDel" Type="bigint" />
+          <Property Name="PositionName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="T_BG_PublishFile">
           <Key>
             <PropertyRef Name="Id" />
@@ -177,6 +188,15 @@
           <Property Name="AreaId" Type="bigint" />
           <Property Name="State" Type="bigint" />
         </EntityType>
+        <EntityType Name="T_Bg_ShortStaticField">
+          <Key>
+            <PropertyRef Name="ShortId" />
+          </Key>
+          <Property Name="ShortId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="T_BG_UpFiles">
           <Key>
             <PropertyRef Name="Id" />
@@ -212,6 +232,16 @@
           <Property Name="IsDel" Type="int" />
           <Property Name="DepartmentId" Type="bigint" />
           <Property Name="AreaId" Type="bigint" />
+          <Property Name="Gender" Type="int" Nullable="false" />
+          <Property Name="PositionId" Type="bigint" Nullable="false" />
+          <Property Name="EntryDate" Type="datetime" />
+          <Property Name="IP" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="EducationId" Type="bigint" Nullable="false" />
+          <Property Name="HouseholdId" Type="bigint" Nullable="false" />
+          <Property Name="School" Type="nvarchar" MaxLength="50" />
+          <Property Name="Emergency" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="200" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="T_User">
           <Key>
@@ -236,6 +266,7 @@
           <Property Name="OperationLvl" Type="int" />
           <Property Name="PassWord" Type="nvarchar" MaxLength="10" />
           <Property Name="IsSaler" Type="bit" Nullable="false" />
+          <Property Name="PositionId" Type="bigint" Nullable="false" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“POS.dbo.V_BG_ActiveFile_Department”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -382,10 +413,12 @@
           <EntitySet Name="T_BG_EmailReciever" EntityType="Self.T_BG_EmailReciever" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_LoginLog" EntityType="Self.T_BG_LoginLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Menu" EntityType="Self.T_BG_Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_BG_Position" EntityType="Self.T_BG_Position" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_PublishFile" EntityType="Self.T_BG_PublishFile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Role" EntityType="Self.T_BG_Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Role_Menu" EntityType="Self.T_BG_Role_Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Shop" EntityType="Self.T_BG_Shop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_Bg_ShortStaticField" EntityType="Self.T_Bg_ShortStaticField" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_UpFiles" EntityType="Self.T_BG_UpFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_User" EntityType="Self.T_BG_User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_User" EntityType="Self.T_User" Schema="dbo" store:Type="Tables" />
@@ -504,7 +537,6 @@
     <edmx:ConceptualModels>
       <Schema Namespace="POSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="POSEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="T_BG_User" EntityType="POSModel.T_BG_User" />
           <EntitySet Name="T_BG_LoginLog" EntityType="POSModel.T_BG_LoginLog" />
           <EntitySet Name="T_BG_Menu" EntityType="POSModel.T_BG_Menu" />
           <EntitySet Name="T_BG_Role" EntityType="POSModel.T_BG_Role" />
@@ -526,27 +558,10 @@
           <EntitySet Name="T_BG_EmailReciever" EntityType="POSModel.T_BG_EmailReciever" />
           <EntitySet Name="V_BG_Email_Reciever" EntityType="POSModel.V_BG_Email_Reciever" />
           <EntitySet Name="T_User" EntityType="POSModel.T_User" />
+          <EntitySet Name="T_BG_Position" EntityType="POSModel.T_BG_Position" />
+          <EntitySet Name="T_Bg_ShortStaticField" EntityType="POSModel.T_Bg_ShortStaticField" />
+          <EntitySet Name="T_BG_User" EntityType="POSModel.T_BG_User" />
         </EntityContainer>
-        <EntityType Name="T_BG_User">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="RealName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PassWord" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="RoleID" Type="Int32" />
-          <Property Name="ShopID" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="ApproveTime" Type="DateTime" Precision="3" />
-          <Property Name="ApproveName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="AddTime" Type="DateTime" Precision="3" />
-          <Property Name="IsDel" Type="Int32" />
-          <Property Name="DepartmentId" Type="Int64" />
-          <Property Name="AreaId" Type="Int64" />
-        </EntityType>
         <EntityType Name="T_BG_LoginLog">
           <Key>
             <PropertyRef Name="ID" />
@@ -881,6 +896,57 @@
           <Property Name="OperationLvl" Type="Int32" />
           <Property Name="PassWord" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="IsSaler" Type="Boolean" Nullable="false" />
+          <Property Name="PositionId" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="T_BG_Position">
+          <Key>
+            <PropertyRef Name="PositionId" />
+          </Key>
+          <Property Name="PositionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmentId" Type="Int64" Nullable="false" />
+          <Property Name="Lvl" Type="Int64" Nullable="false" />
+          <Property Name="AddTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsDel" Type="Int64" />
+          <Property Name="PositionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="T_Bg_ShortStaticField">
+          <Key>
+            <PropertyRef Name="ShortId" />
+          </Key>
+          <Property Name="ShortId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShortName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="T_BG_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RealName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PassWord" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RoleID" Type="Int32" />
+          <Property Name="ShopID" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="ApproveTime" Type="DateTime" Precision="3" />
+          <Property Name="ApproveName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AddTime" Type="DateTime" Precision="3" />
+          <Property Name="IsDel" Type="Int32" />
+          <Property Name="DepartmentId" Type="Int64" />
+          <Property Name="AreaId" Type="Int64" />
+          <Property Name="Gender" Type="Int32" Nullable="false" />
+          <Property Name="PositionId" Type="Int64" Nullable="false" />
+          <Property Name="EntryDate" Type="DateTime" Precision="3" />
+          <Property Name="IP" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EducationId" Type="Int64" Nullable="false" />
+          <Property Name="HouseholdId" Type="Int64" Nullable="false" />
+          <Property Name="School" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Emergency" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -888,27 +954,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="POSModelStoreContainer" CdmEntityContainer="POSEntities">
-          <EntitySetMapping Name="T_BG_User">
-            <EntityTypeMapping TypeName="POSModel.T_BG_User">
-              <MappingFragment StoreEntitySet="T_BG_User">
-                <ScalarProperty Name="AreaId" ColumnName="AreaId" />
-                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
-                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
-                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
-                <ScalarProperty Name="ApproveName" ColumnName="ApproveName" />
-                <ScalarProperty Name="ApproveTime" ColumnName="ApproveTime" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
-                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
-                <ScalarProperty Name="RealName" ColumnName="RealName" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="T_BG_LoginLog">
             <EntityTypeMapping TypeName="POSModel.T_BG_LoginLog">
               <MappingFragment StoreEntitySet="T_BG_LoginLog">
@@ -1235,6 +1280,7 @@
           <EntitySetMapping Name="T_User">
             <EntityTypeMapping TypeName="POSModel.T_User">
               <MappingFragment StoreEntitySet="T_User">
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
                 <ScalarProperty Name="IsSaler" ColumnName="IsSaler" />
                 <ScalarProperty Name="PassWord" ColumnName="PassWord" />
                 <ScalarProperty Name="OperationLvl" ColumnName="OperationLvl" />
@@ -1253,6 +1299,59 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_BG_Position">
+            <EntityTypeMapping TypeName="POSModel.T_BG_Position">
+              <MappingFragment StoreEntitySet="T_BG_Position">
+                <ScalarProperty Name="PositionName" ColumnName="PositionName" />
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="Lvl" ColumnName="Lvl" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_Bg_ShortStaticField">
+            <EntityTypeMapping TypeName="POSModel.T_Bg_ShortStaticField">
+              <MappingFragment StoreEntitySet="T_Bg_ShortStaticField">
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="ShortId" ColumnName="ShortId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_BG_User">
+            <EntityTypeMapping TypeName="POSModel.T_BG_User">
+              <MappingFragment StoreEntitySet="T_BG_User">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Emergency" ColumnName="Emergency" />
+                <ScalarProperty Name="School" ColumnName="School" />
+                <ScalarProperty Name="HouseholdId" ColumnName="HouseholdId" />
+                <ScalarProperty Name="EducationId" ColumnName="EducationId" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="EntryDate" ColumnName="EntryDate" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="AreaId" ColumnName="AreaId" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="ApproveName" ColumnName="ApproveName" />
+                <ScalarProperty Name="ApproveTime" ColumnName="ApproveTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
+                <ScalarProperty Name="RealName" ColumnName="RealName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

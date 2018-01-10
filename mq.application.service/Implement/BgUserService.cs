@@ -7,6 +7,7 @@ using DapperExtensions;
 using mq.application.service.Interface;
 using mq.dataaccess.sql.Interface;
 using mq.model.dbentity;
+using Dapper;
 
 namespace mq.application.service.Implement
 {
@@ -85,5 +86,6 @@ namespace mq.application.service.Implement
                 return false;
             }
         }
-    }
+
+	}
 }

@@ -2,7 +2,7 @@
 @using mq.model.dbentity
 @model mq.model.viewentity.employeebg.UserAddEntity
 @{
-    ViewBag.Title = "添加用户";
+    ViewBag.Title = "添加员工";
     Layout = "~/Views/Share/_Menu.cshtml";
 }
 @section head{
@@ -18,172 +18,200 @@
         }
 
         .layui-form-label {
-            width: 110px;
+            width: 140px;
         }
 
         .layui-icon {
             margin-right: 5px;
         }
     </style>
-
 }
 <div class="layui-main" style="margin-left: 200px;width: 80%">
     <div class="layui-box box1">
         <span class="layui-breadcrumb">
-            <a href="">首页</a>
-            <a><cite>注册用户</cite></a>
+            <a href="">工资考勤</a>
+            <a><cite>添加员工</cite></a>
         </span>
     </div>
     <div class="layui-box box1">
         <form class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">
-                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>用户名:
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="username" id="username" lay-verify="required|username|usercheck|ttt" placeholder="请输入用户名" class="layui-input" onblur="CheckUserName()">
-                </div>
-                <div class="layui-form-mid layui-word-aux" id="usernamemsg">请填写6到12位用户名，必须为字母或者数字</div>
-            </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">
-                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>密 码:
+                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>用户名：
                 </label>
                 <div class="layui-input-inline">
-                    <input type="password" name="password" lay-verify="required|username" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    <input type="text" name="realname" id="realname" lay-verify="required|name|realname" placeholder="请输入用户名" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">请填写6到12位密码，必须为字母或者数字</div>
+                <div class="layui-form-mid layui-word-aux" id="usernamemsg">请与身份证上一致，切不超过八个汉字！</div>
             </div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">真实姓名:</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="realname" lay-verify="required|realname" placeholder="请输入真实姓名" class="layui-input">
-                </div>
-                <div class="layui-form-mid layui-word-aux">请填写与身份证上一致，不得超过8个字符</div>
-            </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>性 别：
+				</label>
+				<div class="layui-input-block">
+					<input type="radio" name="gender" value="0" title="男" checked="">
+					<input type="radio" name="gender" value="1" title="女">
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">性 别</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="gender" value="0" title="男" checked="">
-                    <input type="radio" name="gender" value="1" title="女">
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>员工职务：
+				</label>
+				<div class="layui-input-inline">
+					<select name="positionId" lay-filter="juese">
+						@if (Model.PositionList != null && Model.PositionList.Count > 0)
+						{
+							for (int i = 0; i < Model.PositionList.Count; i++)
+							{
+								<option value="@Model.PositionList[i].PositionId" @(i == 0 ? "selected=\"\"" : "")>@Model.PositionList[i].PositionName</option>
+							}
+						}
+					</select>
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">
-                        <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>手机号码：
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="tel" name="phone" lay-verify="required|phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">
+						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>入职日期：
+					</label>
+					<div class="layui-input-inline">
+						<input type="text" name="entryDate" lay-verify="required" id="date" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux">有效范围：当前日期的35天内！</div>
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">
-                        <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>邮箱：
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="email" lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">请输入真实邮箱，用于找回密码或者接收文件</div>
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>身 份 证：
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" name="identity" lay-verify="identity" placeholder="" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux">请与身份证保持一致，18位！</div>
+			</div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">
-                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>角色：
-                </label>
-                <div class="layui-input-inline">
-                    <select name="roleid" lay-filter="juese">
-                        @if (Model.RoleList != null && Model.RoleList.Count > 0)
-                        {
-                            for (int i = 0; i < Model.RoleList.Count; i++)
-                            {
-                                <option value="@Model.RoleList[i].ID" @(i == 0 ? "selected=\"\"" : "")>@Model.RoleList[i].Name</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">
+						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>手机号码：
+					</label>
+					<div class="layui-input-inline">
+						<input type="tel" name="phone" lay-verify="required|phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">
-                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>部门：
-                </label>
-                <div class="layui-input-inline">
-                    <select name="departmentid" lay-filter="juese">
-                        @if (Model.DepartmentList != null && Model.DepartmentList.Count > 0)
-                        {
-                            for (int i = 0; i < Model.DepartmentList.Count; i++)
-                            {
-                                <option value="@Model.DepartmentList[i].Id" @(i == 0 ? "selected=\"\"" : "")>@Model.DepartmentList[i].DepartmentName</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">员工学历：</label>
+				<div class="layui-input-inline">
+					<select name="educationId" lay-filter="juese">
+						@if (Model.ShortStaticFieldList != null && Model.ShortStaticFieldList.Count > 0)
+						{
+							for (int i = 0; i < Model.ShortStaticFieldList.Count; i++)
+							{
+								<option value="@Model.ShortStaticFieldList[i].ShortId" @(i == 0 ? "selected=\"\"" : "")>@Model.ShortStaticFieldList[i].ShortName</option>
+							}
+						}
+					</select>
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">
-                    <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>所属地区：
-                </label>
-                <div class="layui-input-inline">
-                    <select name="areaid" lay-filter="area" lay-verify="required">
-                        <option value="">请选择地区</option>
-                        @if (Model.AreaList != null && Model.AreaList.Count > 0)
-                        {
-                            for (int i = 0; i < Model.AreaList.Count; i++)
-                            {
-                                <option value="@Model.AreaList[i].ID" @(i == 0 ? "selected=\"\"" : "")>@Model.AreaList[i].AreaName</option>
-                            }
-                        }
-                    </select>
-                </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>户口性质：
+				</label>
+				<div class="layui-input-inline">
+					<select name="householdId" lay-filter="juese">
+						@if (Model.CardFieldList != null && Model.CardFieldList.Count > 0)
+						{
+							for (int i = 0; i < Model.CardFieldList.Count; i++)
+							{
+								<option value="@Model.CardFieldList[i].ShortId" @(i == 0 ? "selected=\"\"" : "")>@Model.CardFieldList[i].ShortName</option>
+							}
+						}
+					</select>
+				</div>
+			</div>
 
-                @*<label class="layui-form-label">
-                        <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>所属商铺：
-                    </label>*@
-                <div class="layui-input-inline">
-                    <select name="shopid" id="shop" lay-verify="required">
-                        <option value="">请选择商铺</option>
-                        @if (Model.ShopList != null && Model.ShopList.Count > 0)
-                        {
-                            foreach (T_BG_Shop shop in Model.ShopList)
-                            {
-                                <option value="@shop.ID">@shop.Name</option>
-                            }
-                        }
-                    </select>
-                </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">毕业学校:</label>
+				<div class="layui-input-inline">
+					<input type="text" name="school" id="school" lay-verify="usercheck" placeholder="毕业学校" class="layui-input">
+				</div>
+			</div>
 
-            </div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">
+						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>Email邮箱：
+					</label>
+					<div class="layui-input-inline">
+						<input type="text" name="email" lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux">请输入真实邮箱，用于找回密码或者接收文件</div>
+				</div>
+			</div>
 
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即注册</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                </div>
-            </div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>紧急联系人及电话:
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" name="emergency" id="emergency" lay-verify="usercheck" placeholder="请输入紧急联系人及电话" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux">如：xxx：18812345678</div>
+			</div>
 
-        </form>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>现 住 址:
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" name="address" id="address" lay-verify="required"  placeholder="请输入现住址" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux">注：最多20个汉字</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">备 注:</label>
+				<div class="layui-input-inline">
+					<input type="text" style="width:500px;" name="remark" id="remark" lay-verify="usercheck" placeholder="备注" class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit="" lay-filter="demo1">立即注册</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+</form>
         <script>
             layui.use(['form', 'layedit', 'laydate'], function () {
-                var form = layui.form(),
-                    layer = layui.layer;
+                var form = layui.form,
+					layer = layui.layer,
+					laydate = layui.laydate;
+
+				//日期
+				laydate.render({
+					elem: '#date'
+					, min: 0 //0天前
+					, max: 35//7天后
+				});
 
                 //自定义验证规则
                 form.verify({
                     pass: [/(.+){6,12}$/, '密码必须6到12位'],
-                    username: [/^[a-zA-Z0-9]{6,12}$/, '必须为6到12位数字或者字母'],
+					username: [/^[a-zA-Z0-9]{6,12}$/, '必须为6到12位数字或者字母'],
+					name: [/^[\u4e00-\u9fa5]{0,8}$/, '必须汉字且不能超过8个字符'],
                     realname: function (value, item) {
                         if (value.length>16) {
-                            return '不得超过8个字符！';
+							return '不能超过8个字符！';
                         }
                     },
                     usercheck: function (value, item) { //value：表单的值、item：表单的DOM对象
@@ -229,9 +257,12 @@
                 var layId;
                 form.on('submit(demo1)', function (data) {
                     var pars = data.field;
-                    pars.username = encodeURIComponent(pars.username);
-                    pars.realname = encodeURIComponent(pars.realname);
-
+					pars.realname = encodeURIComponent(pars.realname);
+					pars.school = encodeURIComponent(pars.school);
+					pars.emergency = encodeURIComponent(pars.emergency);
+					pars.address = encodeURIComponent(pars.address);
+					pars.remark = encodeURIComponent(pars.remark);
+					
                     $.ajax({
                         type: 'POST',
                         url: '@DomainUrlHelper.EmployeeBgPath/User/AddUser',
@@ -281,5 +312,4 @@
             }
         </script>
     </div>
-
 </div>

@@ -13,5 +13,13 @@ namespace mq.model.viewentity.employeebg
         public List<T_BG_Area> AreaList { get; set; }
         public List<T_BG_Shop> ShopList { get; set; }
         public List<T_BG_Department> DepartmentList { get; set; }
-    }
+        public List<T_BG_Position> PositionList { get; set; }
+        public List<T_Bg_ShortStaticField> ShortStaticFieldList { get; set; }
+        public List<T_Bg_ShortStaticField> CardFieldList { get; set; }
+	}
+	public class UserEmployListEntity
+	{
+		public List<T_BG_Area> AreaList { get; set; }
+		public List<T_BG_Shop> ShopList { get; set; }
+	}
 }

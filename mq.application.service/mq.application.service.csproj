@@ -96,9 +96,11 @@
     <Compile Include="Implement\BgEmailService.cs" />
     <Compile Include="Implement\BgLoginLogService.cs" />
     <Compile Include="Implement\BgMenuService.cs" />
+    <Compile Include="Implement\BgPositionService.cs" />
     <Compile Include="Implement\BgPublishFileService.cs" />
     <Compile Include="Implement\BgRoleService.cs" />
     <Compile Include="Implement\BgShopService.cs" />
+    <Compile Include="Implement\BgShortStaticFieldService.cs" />
     <Compile Include="Implement\BgUpFilesService.cs" />
     <Compile Include="Implement\BgUserService.cs" />
     <Compile Include="Implement\BgVActiveFileDepartmentService.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="Implement\BgVPublishFileUserService.cs" />
     <Compile Include="Implement\BgVShopAreaUserService.cs" />
     <Compile Include="Implement\BgVUserAreaRoleDepartmentService.cs" />
+    <Compile Include="Implement\BgUserExtendService.cs" />
     <Compile Include="Interface\IBgAreaService.cs" />
     <Compile Include="Interface\IBgDisplayGuideFileService.cs" />
     <Compile Include="Implement\UserService.cs" />
@@ -119,9 +122,11 @@
     <Compile Include="Interface\IBgEmailService.cs" />
     <Compile Include="Interface\IBgLoginLogService.cs" />
     <Compile Include="Interface\IBgMenuService.cs" />
+    <Compile Include="Interface\IBgPositionService.cs" />
     <Compile Include="Interface\IBgPublishFileService.cs" />
     <Compile Include="Interface\IBgRoleService.cs" />
     <Compile Include="Interface\IBgShopService.cs" />
+    <Compile Include="Interface\IBgShortStaticFieldService.cs" />
     <Compile Include="Interface\IBgUpFilesService.cs" />
     <Compile Include="Interface\IBgUserService.cs" />
     <Compile Include="Interface\IBgVActiveFileDepartmentService.cs" />
@@ -130,6 +135,7 @@
     <Compile Include="Interface\IBgVPublishFileUserService.cs" />
     <Compile Include="Interface\IBgVShopAreaUserService.cs" />
     <Compile Include="Interface\IBgVUserAreaRoleDepartmentService.cs" />
+    <Compile Include="Interface\IBgUserExtendService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

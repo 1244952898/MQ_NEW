@@ -1,0 +1,218 @@
+﻿@model mq.model.viewentity.employeebg.UserEmployListEntity
+@using mq.application.webmvc
+@{
+    ViewBag.Title = "员工信息";
+    Layout = "~/Views/Share/_Menu.cshtml";
+}
+@section head{
+	<style type="text/css">
+		.layui-row {
+			margin: 10px;
+			padding: 15px;
+			background-color: #f2f2f2;
+		}
+
+		.layui-form-item .layui-input-inline {
+			width: 290px;
+		}
+
+		.layui-form-label {
+			width: 50px;
+		}
+
+		.layui-icon {
+			margin-right: 5px;
+		}
+	</style>
+}
+<div class="layui-container" style="margin-left: 185px;width: 93%">
+	<div class="layui-row">
+			<span class="layui-breadcrumb">
+				<a href="">工资考勤</a>
+				<a><cite>员工信息</cite></a>
+			</span>
+	</div>
+
+	<div class="layui-row">
+		<form class="layui-form" action="">
+			<div class="layui-col-md2">
+					<label class="layui-form-label">区 域：</label>
+					<div class="layui-input-inline">
+						<select name="areaId" lay-filter="area">
+							<option value="-1">请选择</option>
+							@if (Model.AreaList != null && Model.AreaList.Count > 0)
+							{
+								for (int i = 0; i < Model.AreaList.Count; i++)
+								{
+									string select = Model.AreaList[i].ID == ViewBag.areaId ? "selected=\"\"" : "";
+									<option value="@Model.AreaList[i].ID" @(select)>@Model.AreaList[i].AreaName</option>
+								}
+							}
+						</select>
+				</div>
+			</div>
+			<div class="layui-col-md2">
+					<label class="layui-form-label">店 铺：</label>
+					<div class="layui-input-inline">
+						<select name="shopId" id="shop" lay-filter="shop">
+							<option value="-1" >请选择</option>
+							@if (Model.ShopList != null && Model.ShopList.Count > 0)
+							{
+								for (int i = 0; i < Model.ShopList.Count; i++)
+								{
+									string select = Model.ShopList[i].ID == ViewBag.shopID ? "selected=\"\"" : "";
+									<option value="@Model.ShopList[i].ID" @(i == 0 ? "selected=\"\"" : "")>@Model.ShopList[i].Name</option>
+								}
+							}
+						</select>
+					</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<div class="layui-input-inline" style="margin-right:0;margin-left: 25px;">
+							<input type="tel" name="phone" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label" style="padding-left: 5px;">店铺名</label>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md1">
+				<button class="layui-btn" lay-submit="" lay-filter="search">查 找</button>
+			</div>
+
+			<div class="layui-col-md1">
+				<input type="button" class="layui-btn layui-bg-orange" onclick="AddUser();" value="添加员工"/>
+			</div>	
+			<div class="layui-col-md1">
+				<input type="button" class="layui-btn layui-bg-gray" onclick="javascript: void(0)" value="已离职员工" />
+			</div>	
+</form>
+	</div>
+		<div class="layui-row layui-form">
+			<table class="layui-table">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="150">
+					<col width="150">
+					<col width="300">
+					<col width="200">
+					<col width="400">
+					<col width="400">
+			
+					<col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>编号</th>
+						<th>查看详情</th>
+						<th>真实姓名</th>
+						<th>区域</th>
+						<th>店铺名称</th>
+						<th>职务</th>
+						<th>现住址</th>
+						<th>备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>贤心</td>
+						<td>查看详情</td>
+						<td>汉族</td>
+						<td>1989-10-14</td>
+						<td>人生似修行</td>
+						<td>人生似修行</td>
+						<td>人生似修行</td>
+						<td>人生似修行</td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
+</div>
+<script>
+	//获取用户信息
+	function a() {
+		alert(1);
+	}
+
+	layui.use(['form', 'layedit', 'laydate'], function () {
+		var form = layui.form,
+			layer = layui.layer,
+			laydate = layui.laydate;
+
+		//自定义验证规则
+		form.verify({
+			pass: [/(.+){6,12}$/, '密码必须6到12位'],
+			username: [/^[a-zA-Z0-9]{6,12}$/, '必须为6到12位数字或者字母'],
+			name: [/^[\u4e00-\u9fa5]{0,8}$/, '必须汉字且不能超过8个字符'],
+			realname: function (value, item) {
+				if (value.length > 16) {
+					return '不能超过8个字符！';
+				}
+			}
+		});
+		
+		form.on('select(area)', function (data) {
+			var id = data.value;
+			$.ajax({
+				type: 'POST',
+				url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetShopByAreaId?areaId=' + id,
+                        cache: false,
+						success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '<option value="-1" selected="">请选择</option>';
+								if (data.ShopList != null) {
+									$.each(data.ShopList, function (id, obj) {
+										ht += '<option value="' + obj.ID + '">' + obj.Name + '</option>'
+									});
+								}
+								$('#shop').html(ht);
+								form.render();
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+
+                        },
+                        error: function (a, b, c) {
+                        }
+                    });
+                });
+
+                //监听提交
+                var layId;
+				form.on('submit(search)', function (data) {
+                    var pars = data.field;
+                    $.ajax({
+                        type: 'POST',
+						url: 'DomainUrlHelper.EmployeeBgPath/api/User/shop',
+                        data: pars,
+                        cache: false,
+                        beforeSend: function () {
+                            layId = layer.load(2);
+                        },
+                        success: function (dat) {
+                            if (dat.ErrorCode == "E000") {
+                                layer.msg('添加成功');
+                            } else {
+                                layer.alert(dat.ErrorMessage, {
+                                    icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
+                                    skin: 'layer-ext-moon'
+                                });
+                            }
+                        },
+                        error: function (a, b, c) {
+                        },
+                        complete: function () {
+                            layer.close(layId);
+                        }
+                    });
+                    return false;
+                });
+	});
+
+	//添加员工链接
+	function AddUser() {
+		location.href = '@Url.Action("Add")';
+	}
+</script>

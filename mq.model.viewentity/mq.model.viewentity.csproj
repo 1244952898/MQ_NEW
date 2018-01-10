@@ -72,6 +72,7 @@
     <Compile Include="employeebg\JsonShopDelShopEntity.cs" />
     <Compile Include="employeebg\JsonShopGetShopEntity.cs" />
     <Compile Include="employeebg\JsonUserAddUserEntity.cs" />
+    <Compile Include="employeebg\JsonUserGetListEntity.cs" />
     <Compile Include="employeebg\JsonUserGetShopListEntity.cs" />
     <Compile Include="employeebg\JsonUserPassEntity.cs" />
     <Compile Include="employeebg\ShopAddEntity.cs" />

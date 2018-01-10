@@ -125,6 +125,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="简单代码生成器\MQ简单代码生成器.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mq.application.enumlib\mq.application.enumlib.csproj">
@@ -137,6 +138,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="简单代码生成器\MQ简单代码生成器.exe" />
     <Content Include="说明.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

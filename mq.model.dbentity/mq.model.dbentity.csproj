@@ -141,6 +141,9 @@
     <Compile Include="T_BG_Menu.cs">
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_BG_Position.cs">
+      <DependentUpon>mqEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_BG_PublishFile.cs">
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>
@@ -151,6 +154,9 @@
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="T_BG_Shop.cs">
+      <DependentUpon>mqEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Bg_ShortStaticField.cs">
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="T_BG_UpFiles.cs">

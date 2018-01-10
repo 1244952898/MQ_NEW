@@ -25,7 +25,6 @@ namespace mq.model.dbentity
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<T_BG_User> T_BG_User { get; set; }
         public virtual DbSet<T_BG_LoginLog> T_BG_LoginLog { get; set; }
         public virtual DbSet<T_BG_Menu> T_BG_Menu { get; set; }
         public virtual DbSet<T_BG_Role> T_BG_Role { get; set; }
@@ -47,5 +46,8 @@ namespace mq.model.dbentity
         public virtual DbSet<T_BG_EmailReciever> T_BG_EmailReciever { get; set; }
         public virtual DbSet<V_BG_Email_Reciever> V_BG_Email_Reciever { get; set; }
         public virtual DbSet<T_User> T_User { get; set; }
+        public virtual DbSet<T_BG_Position> T_BG_Position { get; set; }
+        public virtual DbSet<T_Bg_ShortStaticField> T_Bg_ShortStaticField { get; set; }
+        public virtual DbSet<T_BG_User> T_BG_User { get; set; }
     }
 }

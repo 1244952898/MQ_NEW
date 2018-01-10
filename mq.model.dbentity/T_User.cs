@@ -32,5 +32,6 @@ namespace mq.model.dbentity
         public Nullable<int> OperationLvl { get; set; }
         public string PassWord { get; set; }
         public bool IsSaler { get; set; }
+        public long PositionId { get; set; }
     }
 }

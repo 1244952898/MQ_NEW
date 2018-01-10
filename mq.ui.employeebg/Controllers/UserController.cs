@@ -15,13 +15,17 @@ namespace mq.ui.employeebg.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IBgRoleService _bgRoleService;
+		
+		private readonly IBgRoleService _bgRoleService;
         private readonly IBgAreaService _areaService;
         private readonly IBgShopService _bgShopService;
         private readonly IBgDepartmentService _bgDepartmentService;
         private readonly IBgUserService _bgUserService;
         private readonly IBgVUserAreaRoleDepartmentService _bgVUser;
-        public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser)
+        private readonly IBgPositionService _bgPositionService;
+		private readonly IBgShortStaticFieldService _bgShortStaticFieldService;
+
+	  public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser, IBgPositionService bgPositionService,IBgShortStaticFieldService bgShortStaticFieldService)
         {
             _bgRoleService = bgRoleService;
             _areaService = areaService;
@@ -29,20 +33,21 @@ namespace mq.ui.employeebg.Controllers
             _bgDepartmentService = bgDepartmentService;
             _bgUserService = bgUserService;
             _bgVUser = bgVUser;
-        }
+			_bgPositionService = bgPositionService;
+			_bgShortStaticFieldService = bgShortStaticFieldService;
+		}
 
         // GET: User
         public ActionResult Add()
         {
             UserAddEntity entity = new UserAddEntity();
             entity.RoleList = _bgRoleService.List();
-            entity.DepartmentList = _bgDepartmentService.GetListDepartment();
-            entity.AreaList = _areaService.List();
-            if (entity.AreaList != null && entity.AreaList.Count > 0)
-            {
-                entity.ShopList = _bgShopService.List(entity.AreaList[0].ID);
-            }
-            return View(entity);
+			long positionId = LoginHelper.PositionId;
+			long departmentId = LoginHelper.DepartmentId;
+			entity.PositionList = _bgPositionService.GetlistByLvlAndDepartmentId(positionId, departmentId);
+			entity.ShortStaticFieldList = _bgShortStaticFieldService.GetListByType(0);
+			entity.CardFieldList = _bgShortStaticFieldService.GetListByType(1);
+			return View(entity);
         }
 
         public ActionResult List()
@@ -61,39 +66,52 @@ namespace mq.ui.employeebg.Controllers
         public JsonResult AddUser()
         {
             JsonUserAddUserEntity json = new JsonUserAddUserEntity();
-            string name = CommonHelper.GetPostValue("username");
-            string password = CommonHelper.GetPostValue("password");
             string realname = CommonHelper.GetPostValue("realname");
-            string phone = CommonHelper.GetPostValue("phone");
-            string email = CommonHelper.GetPostValue("email");
-            int roleid = CommonHelper.GetPostValue("roleid").ToInt(-1);
-            int areaid = CommonHelper.GetPostValue("areaid").ToInt(-1);
-            int shopid = CommonHelper.GetPostValue("shopid").ToInt(-1);
-            int departmentId = CommonHelper.GetPostValue("departmentId").ToInt(-1);
-
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password) || roleid < 0 || areaid < 0 || shopid < 0 || departmentId < 0)
+			int gender = CommonHelper.GetPostValue("gender").ToInt(-1);
+			long positionId = CommonHelper.GetPostValue("positionId").ToLong(-1);
+			DateTime entryDate = CommonHelper.GetPostValue("entryDate").ToDateTime(DateTime.MaxValue);
+			string identity = CommonHelper.GetPostValue("identity");
+			string phone = CommonHelper.GetPostValue("phone");
+			long educationId = CommonHelper.GetPostValue("educationId").ToLong(-1);
+			long householdId = CommonHelper.GetPostValue("householdId").ToLong(-1);
+			string school = CommonHelper.GetPostValue("school");
+			string email = CommonHelper.GetPostValue("email");
+			string emergency = CommonHelper.GetPostValue("emergency");
+			string address = CommonHelper.GetPostValue("address");
+			string remark = CommonHelper.GetPostValue("remark");
+			if (string.IsNullOrEmpty(realname) || gender == -1 || positionId == -1 || entryDate == DateTime.MaxValue || string.IsNullOrEmpty(identity)|| householdId==-1|| string.IsNullOrEmpty(email) || string.IsNullOrEmpty(emergency) || string.IsNullOrEmpty(address))
             {
                 json.ErrorCode = "E001";
                 json.ErrorMessage = "参数不全！";
                 return Json(json);
             }
 
-            name = HttpUtility.UrlDecode(name);
             realname = HttpUtility.UrlDecode(realname);
-
-            T_BG_User user = new T_BG_User();
-            user.Phone = phone;
-            user.Name = name;
+			school = HttpUtility.UrlDecode(school);
+			emergency = HttpUtility.UrlDecode(emergency);
+			address = HttpUtility.UrlDecode(address);
+			remark = HttpUtility.UrlDecode(remark);
+			T_BG_User user = new T_BG_User();
             user.RealName = realname;
-            user.PassWord = password;
-            user.Email = email;
-            user.RoleID = roleid;
-            user.ShopID = shopid;
-            user.Status = 0;
-            user.AddTime = DateTime.Now;
+            user.Gender = gender;
+            user.PositionId = positionId;
+            user.EntryDate = entryDate;
+            user.IP = identity;
+            user.Phone = phone;
+            user.EducationId = educationId;
+            user.HouseholdId = householdId;
+			user.School = school;
+			user.Email = email;
+			user.Emergency = emergency;
+			user.Address = address;
+			user.Remark = remark;
+
+			user.DepartmentId = LoginHelper.DepartmentId;
+			user.Status = 0;
+			user.AddTime = DateTime.Now;
             user.IsDel = 0;
-            user.DepartmentId = departmentId;
-            user.AreaId = areaid;
+			user.AreaId = LoginHelper.AreaId;
+			user.RoleID = 2;
 
             bool result = _bgUserService.Add(user);
 
@@ -171,5 +189,20 @@ namespace mq.ui.employeebg.Controllers
             } 
             return Json(json);
         }
-    }
+
+		public ActionResult EmployList() {
+			UserEmployListEntity entity = new UserEmployListEntity();
+			entity.AreaList = _areaService.List();
+			long areaId = LoginHelper.AreaId;
+			long shopID = LoginHelper.ShopID;
+			if (entity.AreaList != null && entity.AreaList.Count > 0)
+			{
+				entity.ShopList = _bgShopService.List(areaId);
+			}
+			ViewBag.areaId = areaId;
+			ViewBag.shopID = shopID;
+			return View(entity);
+		}
+
+	}
 }

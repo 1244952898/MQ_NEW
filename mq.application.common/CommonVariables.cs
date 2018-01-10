@@ -23,11 +23,15 @@ namespace koala.application.common
         public static string LoginCookiebgUserEmail { get { return "Login_Cookies_bgUserEmail"; } }
         public static string LoginCookiebgUserRoleID { get { return "Login_Cookies_bgUserRoleID"; } }
         public static string LoginCookiebgUserShopID { get { return "Login_Cookies_bgUserRoleShopID"; } }
+        public static string LoginCookiebgUserPositionId { get { return "Login_Cookies_bgUserPositionId"; } }
+        public static string LoginCookiebgUserDepartmentId { get { return "Login_Cookies_bgUserDepartmentId"; } }
+        public static string LoginCookiebgUserAreaId { get { return "Login_Cookies_bgUserAreaId"; } }
 
-        /// <summary>
-        /// 无需登录验证的页面
-        /// </summary>
-        public static string[] ExcludePaths
+		
+		/// <summary>
+		/// 无需登录验证的页面
+		/// </summary>
+		public static string[] ExcludePaths
         {
             get
             {

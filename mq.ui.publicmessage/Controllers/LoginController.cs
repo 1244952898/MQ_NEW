@@ -97,5 +97,15 @@ namespace mq.ui.publicmessage.Controllers
             }
             return Json(entity, JsonRequestBehavior.AllowGet);
         }
-    }
+
+		public ActionResult Logout()
+		{
+			LoginHelper.DelBgUserCookie();
+			string ip = IPHelper.GetLoginIp(System.Web.HttpContext.Current.Request);
+			string address = LoginHelper.GetMaxMindOmniData(ip);
+			T_BG_LoginLog loginLog = new T_BG_LoginLog { LogUserID = LoginHelper.UserId.ToInt(0), IP = ip, Address = address, LogTime = DateTime.Now, IsLogIn = true };
+			long result = _bgLoginLogService.Add(loginLog);
+			return RedirectToAction("Login");
+		}
+	}
 }

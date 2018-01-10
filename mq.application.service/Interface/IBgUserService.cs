@@ -16,5 +16,7 @@ namespace mq.application.service.Interface
         bool Add(T_BG_User user);
         bool Check(string username);
         bool Update(T_BG_User user);
-    }
+		List<T_BG_User> GetListByAreaIdShopIdShopName(string shopName, long areaId = -1, long shopId = -1);
+
+	}
 }

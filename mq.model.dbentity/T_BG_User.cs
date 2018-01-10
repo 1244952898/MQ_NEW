@@ -29,5 +29,15 @@ namespace mq.model.dbentity
         public Nullable<int> IsDel { get; set; }
         public Nullable<long> DepartmentId { get; set; }
         public Nullable<long> AreaId { get; set; }
+        public int Gender { get; set; }
+        public long PositionId { get; set; }
+        public Nullable<System.DateTime> EntryDate { get; set; }
+        public string IP { get; set; }
+        public long EducationId { get; set; }
+        public long HouseholdId { get; set; }
+        public string School { get; set; }
+        public string Emergency { get; set; }
+        public string Address { get; set; }
+        public string Remark { get; set; }
     }
 }

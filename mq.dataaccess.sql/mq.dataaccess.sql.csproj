@@ -98,9 +98,11 @@
     <Compile Include="Implement\BgEmailRepository.cs" />
     <Compile Include="Implement\BgLoginLogRepository.cs" />
     <Compile Include="Implement\BgMenuRepository.cs" />
+    <Compile Include="Implement\BgPositionRepository.cs" />
     <Compile Include="Implement\BgPublishFileRepository.cs" />
     <Compile Include="Implement\BgRoleRepository.cs" />
     <Compile Include="Implement\BgShopRepository.cs" />
+    <Compile Include="Implement\BgShortStaticFieldRepository.cs" />
     <Compile Include="Implement\BgUpFilesRepository.cs" />
     <Compile Include="Implement\BGUserRepository.cs" />
     <Compile Include="Implement\BgVActiveFileDepartmentRepository.cs" />
@@ -109,7 +111,8 @@
     <Compile Include="Implement\BgVPublishFileUserRepository.cs" />
     <Compile Include="Implement\BgVShopAreaUserRepository.cs" />
     <Compile Include="Implement\BgVUserAreaRoleDepartmentRepository.cs" />
-    <Compile Include="Interface\BgVEmailRecieverRepository.cs" />
+    <Compile Include="Implement\BgUserExtendRepository.cs" />
+    <Compile Include="Interface\IBgVEmailRecieverRepository.cs" />
     <Compile Include="Interface\IBgAreaRepository.cs" />
     <Compile Include="Interface\IBgDisplayGuideFileRepository.cs" />
     <Compile Include="Implement\UserRepository.cs" />
@@ -119,6 +122,7 @@
     <Compile Include="Interface\IBgDisplayPartitionRepository.cs" />
     <Compile Include="Interface\IBgEmailRecieverRepository.cs" />
     <Compile Include="Interface\IBgEmailRepository.cs" />
+    <Compile Include="Interface\IBgPositionRepository.cs" />
     <Compile Include="Interface\IBgPublishFileRepository.cs" />
     <Compile Include="Interface\IBgLoginLogRepository.cs" />
     <Compile Include="Interface\IBgMenuRepository.cs" />
@@ -131,7 +135,9 @@
     <Compile Include="Interface\IBgVPublishFileUserRepository.cs" />
     <Compile Include="Interface\IBgVShopAreaUserRepositoiry.cs" />
     <Compile Include="Interface\IBgVUserAreaRoleDepartmentRepository.cs" />
+    <Compile Include="Interface\IBgUserExtendRepository.cs" />
     <Compile Include="Interface\IUserRepository.cs" />
+    <Compile Include="Interface\IBgShortStaticFieldRepository.cs" />
     <Compile Include="IRepositoryBase.cs" />
     <Compile Include="MPConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

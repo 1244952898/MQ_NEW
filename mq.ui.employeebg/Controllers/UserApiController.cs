@@ -51,16 +51,17 @@ namespace mq.ui.employeebg.Controllers
 		{
 			long areaId = CommonHelper.GetPostValue("areaId").ToLong(-999);
 			long shopId = CommonHelper.GetPostValue("shopId").ToLong(-999);
-			string shopName = CommonHelper.GetPostValue("shop");
+			string realName = CommonHelper.GetPostValue("realName");
+			int status = CommonHelper.GetPostValue("status").ToInt(-1);
 			JsonUserGetListEntity result = new JsonUserGetListEntity();
-			if (areaId == -999|| shopId==-999)
+			if (status==-1&&(areaId == -999 || shopId ==-999))
 			{
 				result.ErrorCode = "E001";
 				result.ErrorMessage = "获得信息不全！";
 				return result;
 			}
-			shopName = HttpUtility.UrlDecode(shopName);
-			result.UserExtendList = _bgUserExtendService.GetListByAreaIdShopIdShopName(shopName,areaId, shopId);
+			realName = HttpUtility.UrlDecode(realName);
+			result.UserExtendList = _bgUserExtendService.GetListByAreaIdShopIdShopName(realName,areaId, shopId, status);
 			result.ErrorCode = "E000";
 			return result;
 		}

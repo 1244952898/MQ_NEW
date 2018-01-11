@@ -111,6 +111,7 @@ namespace mq.ui.employeebg.Controllers
 			user.AddTime = DateTime.Now;
             user.IsDel = 0;
 			user.AreaId = LoginHelper.AreaId;
+			user.ShopID=LoginHelper.ShopID;//这个后期可能需要修改
 			user.RoleID = 2;
 
             bool result = _bgUserService.Add(user);

@@ -68,9 +68,9 @@ namespace mq.application.common
 		/// <summary>
 		/// 店铺Id
 		/// </summary>
-		public static long ShopID
+		public static int ShopID
 		{
-			get { return CookieHelper.GetCookie(CommonVariables.LoginCookiebgUserShopID).ToLong(0); }
+			get { return CookieHelper.GetCookie(CommonVariables.LoginCookiebgUserShopID).ToInt(0); }
 		}
 
 		public static bool isOnline()

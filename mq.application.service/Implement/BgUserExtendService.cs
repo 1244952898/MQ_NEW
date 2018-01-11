@@ -17,16 +17,18 @@ namespace mq.application.service.Implement
 		{
 			_bgUserExtendRepository = bgUserExtendRepository;
 		}
-		public List<BgUserExtend> GetListByAreaIdShopIdShopName(string shopName, long areaId = -1, long shopId = -1)
+		public List<BgUserExtend> GetListByAreaIdShopIdShopName(string realName, long areaId = -1, long shopId = -1, int status = -1)
 		{
 			try
 			{
 				string sql = @"
-								SELECT A.* FROM T_BG_User AS A
+								SELECT A.*,B.Name AS ShopName,C.DepartmentName ,D.AreaName,E.PositionName,
+								F.ShortName AS EducationName,G.ShortName AS HouseholdName
+								FROM T_BG_User AS A
 								JOIN T_BG_Shop AS B ON A.ShopID=B.ID
 								LEFT JOIN T_BG_Department as C on A.DepartmentId=C.Id
 								LEFT JOIN T_BG_Area AS D ON A.AreaId=D.ID
-								LEFT JOIN T_BG_Position AS E ON A.PositionId=E.PositionName
+								LEFT JOIN T_BG_Position AS E ON A.PositionId=E.PositionId
 								LEFT JOIN T_Bg_ShortStaticField AS F ON A.DepartmentId=F.ShortId
 								LEFT JOIN T_Bg_ShortStaticField AS G ON A.HouseholdId=G.ShortId
 								WHERE A.IsDel=0	{0}
@@ -35,22 +37,27 @@ namespace mq.application.service.Implement
 				DynamicParameters pars = new DynamicParameters();
 				if (areaId > 0)
 				{
-					whereSql += "AND A.AreaId=@AreaId ";
+					whereSql += " AND A.AreaId=@AreaId ";
 					pars.Add("AreaId", areaId);
 				}
 				if (shopId > 0)
 				{
-					whereSql += "AND A.ShopID=@ShopID ";
+					whereSql += " AND A.ShopID=@ShopID ";
 					pars.Add("ShopID", shopId);
 				}
-				if (!string.IsNullOrEmpty(shopName))
+				if (status>0)
 				{
-					whereSql += "AND B.Name LIKE '%@NAME%' ";
-					pars.Add("NAME", shopName);
+					whereSql += " AND A.Status=@Status ";
+					pars.Add("Status", status);
 				}
-				whereSql = string.IsNullOrEmpty(whereSql) ? whereSql : "WHERE " + whereSql.TrimStart(new char[] { 'A', 'N', 'D' });
+				if (!string.IsNullOrEmpty(realName))
+				{
+					whereSql += " AND A.RealName LIKE @NAME ";
+					pars.Add("NAME", string.Format("%{0}%", realName));
+				}
+				
 				sql = string.Format(sql, whereSql);
-				var list = _bgUserRepository.QueryList(sql, pars);
+				var list = _bgUserExtendRepository.QueryList(sql, pars);
 				if (list != null)
 				{
 					return list.ToList();

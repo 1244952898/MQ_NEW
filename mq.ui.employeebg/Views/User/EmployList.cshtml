@@ -17,7 +17,7 @@
 		}
 
 		.layui-form-label {
-			width: 50px;
+			width: 60px;
 		}
 
 		.layui-icon {
@@ -71,9 +71,9 @@
 				<div class="layui-form-item">
 					<div class="layui-inline">
 						<div class="layui-input-inline" style="margin-right:0;margin-left: 25px;">
-							<input type="tel" name="phone" autocomplete="off" class="layui-input">
+							<input type="tel" name="realName" autocomplete="off" class="layui-input">
 						</div>
-						<label class="layui-form-label" style="padding-left: 5px;">店铺名</label>
+						<label class="layui-form-label" style="padding-left: 5px;">员工姓名</label>
 					</div>
 				</div>
 			</div>
@@ -85,7 +85,7 @@
 				<input type="button" class="layui-btn layui-bg-orange" onclick="AddUser();" value="添加员工"/>
 			</div>	
 			<div class="layui-col-md1">
-				<input type="button" class="layui-btn layui-bg-gray" onclick="javascript:" value="已离职员工" />
+				<input type="button" class="layui-btn layui-bg-gray" onclick="GetUserData(3);" value="已离职员工" />
 			</div>	
 </form>
 	</div>
@@ -94,19 +94,19 @@
 				<colgroup>
 					<col width="80">
 					<col width="100">
+					<col width="100">
 					<col width="150">
 					<col width="150">
 					<col width="300">
 					<col width="200">
 					<col width="400">
 					<col width="400">
-			
-					<col>
 				</colgroup>
 				<thead>
 					<tr>
 						<th>编号</th>
 						<th>查看详情</th>
+						<th>状态</th>
 						<th>真实姓名</th>
 						<th>区域</th>
 						<th>店铺名称</th>
@@ -115,10 +115,10 @@
 						<th>备注</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="body">
 					<tr>
 						<td>贤心</td>
-						<td>查看详情</td>
+						<td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg();"/></td>
 						<td>汉族</td>
 						<td>1989-10-14</td>
 						<td>人生似修行</td>
@@ -131,9 +131,43 @@
 	</div>
 </div>
 <script>
+	$(function () {
+		GetUserData(-1);
+	});
+
+
 	//获取用户信息
-	function a() {
-		alert(1);
+	function GetUserData(status) {
+		var url;
+		if (status == undefined||status<0) {
+			url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList?areaId=@(ViewBag.areaId)&shopId=@(ViewBag.shopID)';
+		} else {
+			url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList?status=' + status;
+		}
+		$.ajax({
+				type: 'POST',
+				url: url,
+						success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '';
+								if (data.UserExtendList != null) {
+									$.each(data.UserExtendList, function (id, obj) {
+										var statusName = obj.Status == 0 ? "未审核" : obj.Status == 1 ? "审核通过" : obj.Status == 2 ? "审核未通过" : obj.Status == 3 ?"离职":"未知数据"
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+									});
+								}
+								$('#body').html(ht);
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+                        },
+                        error: function (a, b, c) {
+                        }
+                    });
+	}
+
+	function GetDetailMsg(id) {
+		layer.msg('功能待定，联系开发者!');
 	}
 
 	layui.use(['form', 'layedit', 'laydate'], function () {
@@ -152,9 +186,14 @@
 				}
 			}
 		});
-		
+
 		form.on('select(area)', function (data) {
 			var id = data.value;
+			if (id.areaId==-1) {
+				var ht = '<option value="-1" selected="">请选择</option>';
+				$('#shop').html(ht);
+				return;
+			}
 			$.ajax({
 				type: 'POST',
 				url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetShopByAreaId?areaId=' + id,
@@ -168,7 +207,6 @@
 									});
 								}
 								$('#shop').html(ht);
-								form.render();
 							} else {
 								layer.msg(data.ErrorMessage);
 							}
@@ -185,22 +223,25 @@
                     var pars = data.field;
                     $.ajax({
                         type: 'POST',
-						url: 'DomainUrlHelper.EmployeeBgPath/api/User/shop',
+						url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList',
                         data: pars,
                         cache: false,
                         beforeSend: function () {
                             layId = layer.load(2);
                         },
-                        success: function (dat) {
-                            if (dat.ErrorCode == "E000") {
-                                layer.msg('添加成功');
-                            } else {
-                                layer.alert(dat.ErrorMessage, {
-                                    icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
-                                    skin: 'layer-ext-moon'
-                                });
-                            }
-                        },
+                        success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '';
+								if (data.UserExtendList != null) {
+									$.each(data.UserExtendList, function (id, obj) {
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+									});
+								}
+								$('#body').html(ht);
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+						},
                         error: function (a, b, c) {
                         },
                         complete: function () {

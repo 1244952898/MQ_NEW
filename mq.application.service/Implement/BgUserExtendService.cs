@@ -68,5 +68,28 @@ namespace mq.application.service.Implement
 			}
 			return null;
 		}
+
+		public List<BgUserExtend> GetApproveList(long positionId)
+		{
+			try
+			{
+				string sql = @"
+								 EXEC GetApproveList @positionId
+								";
+				
+				DynamicParameters pars = new DynamicParameters();
+				pars.Add("positionId", positionId);
+				var list = _bgUserExtendRepository.QueryList(sql, pars);
+				if (list != null)
+				{
+					return list.ToList();
+				}
+			}
+			catch (Exception ex)
+			{
+				
+			}
+			return null;
+		}
 	}
 }

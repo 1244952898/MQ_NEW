@@ -10,6 +10,8 @@ using mq.application.service.Interface;
 using mq.model.dbentity;
 using mq.model.viewentity;
 using mq.model.viewentity.employeebg;
+using mq.model.extendedentity;
+using mq.application.webmvc;
 
 namespace mq.ui.employeebg.Controllers
 {
@@ -24,8 +26,9 @@ namespace mq.ui.employeebg.Controllers
         private readonly IBgVUserAreaRoleDepartmentService _bgVUser;
         private readonly IBgPositionService _bgPositionService;
 		private readonly IBgShortStaticFieldService _bgShortStaticFieldService;
+		private readonly IBgUserExtendService _bgUserExtendService;
 
-	  public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser, IBgPositionService bgPositionService,IBgShortStaticFieldService bgShortStaticFieldService)
+		public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser, IBgPositionService bgPositionService,IBgShortStaticFieldService bgShortStaticFieldService, IBgUserExtendService bgUserExtendService)
         {
             _bgRoleService = bgRoleService;
             _areaService = areaService;
@@ -35,11 +38,13 @@ namespace mq.ui.employeebg.Controllers
             _bgVUser = bgVUser;
 			_bgPositionService = bgPositionService;
 			_bgShortStaticFieldService = bgShortStaticFieldService;
+			_bgUserExtendService = bgUserExtendService;
 		}
 
         // GET: User
         public ActionResult Add()
         {
+			int id = CommonHelper.GetPostValue("id").ToInt(-1);
             UserAddEntity entity = new UserAddEntity();
             entity.RoleList = _bgRoleService.List();
 			long positionId = LoginHelper.PositionId;
@@ -47,6 +52,17 @@ namespace mq.ui.employeebg.Controllers
 			entity.PositionList = _bgPositionService.GetlistByLvlAndDepartmentId(positionId, departmentId);
 			entity.ShortStaticFieldList = _bgShortStaticFieldService.GetListByType(0);
 			entity.CardFieldList = _bgShortStaticFieldService.GetListByType(1);
+			if (id > 0)
+			{
+				entity.BgUser = _bgUserService.GetUserById(id);
+				if (entity.BgUser==null)
+				{
+					string msg = HttpUtility.HtmlEncode("未获得该用户信息");
+					string url = DomainUrlHelper.EmployeeBgPath + "/menu/error?ErrorCode=E000&ErrorMsg=" + msg;
+					return Redirect(url);
+				}
+			}
+			ViewBag.add = id<0;
 			return View(entity);
         }
 
@@ -205,5 +221,12 @@ namespace mq.ui.employeebg.Controllers
 			return View(entity);
 		}
 
+		public ActionResult ApproveEmploy()
+		{
+			//UserApproveEmployEntity entity = new UserApproveEmployEntity();
+			long positionId = LoginHelper.PositionId;
+			List<BgUserExtend> ApproveList= _bgUserExtendService.GetApproveList(positionId);
+			return View(ApproveList);
+		}
 	}
 }

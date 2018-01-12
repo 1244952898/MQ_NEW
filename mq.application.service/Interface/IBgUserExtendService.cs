@@ -10,5 +10,6 @@ namespace mq.application.service.Interface
 	public interface IBgUserExtendService
 	{
 		List<BgUserExtend> GetListByAreaIdShopIdShopName(string realName, long areaId = -1, long shopId = -1, int status=-1);
+		List<BgUserExtend> GetApproveList(long positionId);
 	}
 }

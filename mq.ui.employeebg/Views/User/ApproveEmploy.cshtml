@@ -1,0 +1,197 @@
+﻿@model List<mq.model.extendedentity.BgUserExtend> 
+@using mq.application.webmvc
+@using mq.application.common;
+@{
+    ViewBag.Title = "员工审核";
+    Layout = "~/Views/Share/_Menu.cshtml";
+}
+@section head{
+	<style type="text/css">
+		.layui-row {
+			margin: 10px;
+			padding: 15px;
+			background-color: #f2f2f2;
+		}
+
+		.layui-form-item .layui-input-inline {
+			width: 290px;
+		}
+
+		.layui-form-label {
+			width: 60px;
+		}
+
+		.layui-icon {
+			margin-right: 5px;
+		}
+	</style>
+}
+<div class="layui-container" style="margin-left: 185px;width: 93%">
+	<div class="layui-row">
+		<span class="layui-breadcrumb">
+			<a href="">工资考勤</a>
+			<a><cite>员工审核</cite></a>
+		</span>
+	</div>
+
+	<div class="layui-row layui-form">
+		<table class="layui-table">
+			<colgroup>
+				<col width="90">
+				<col width="80">
+				<col width="150">
+				<col width="80">
+				<col width="150">
+				<col width="150">
+				<col width="200">
+				<col width="180">
+				<col width="200">
+				<col width="200">
+				<col width="300">
+				<col width="300">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>进行审核</th>
+					<th>编号</th>
+					<th>真实姓名</th>
+					<th>性别</th>
+					<th>员工职务</th>
+					<th>入职日期</th>
+					<th>身份证</th>
+					<th>手机号码</th>
+					<th>户口性质</th>
+					<th>Email邮箱</th>
+					<th>紧急联系人及电话邮箱</th>
+					<th>现住址</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model != null && Model.Count > 0)
+				{
+					for (int i = 0; i < Model.Count; i++)
+					{
+						<tr>
+							<td>
+							@{
+								string cls = string.Empty;
+								string name = string.Empty;
+								if (Model[i].Status == 0)
+								{	
+									<input type="button" onclick="layui.pass('@(Model[i].ID)');" class="layui-btn" value="进行审核"/>
+								}
+								else if (Model[i].Status == 1)
+								{	
+									<input type="button" class="layui-btn layui-btn-disabled" value="审核通过"/>
+								}
+								else
+								{	
+									<input type="button" class="layui-btn layui-btn-disabled" value="审核失败"/>
+								}
+							}
+							</td>
+							<td>@(i+1)</td>
+							<td>@Model[i].RealName</td>
+							<td>@(Model[i].Gender == 0 ? "男" : "女")</td>
+							<td>@(Model[i].PositionName)</td>
+							<td>@(Model[i].EntryDate.ToDateTime(DateTime.MinValue).ToString("yyyy-MM-dd"))</td>
+							<td>@(Model[i].IP)</td>
+							<td>@(Model[i].Phone)</td>
+							<td>@(Model[i].HouseholdName)</td>
+							<td>@(Model[i].Email)</td>
+							<td>@(Model[i].Emergency)</td>
+							<td>@(Model[i].Address)</td>
+						</tr>
+					}
+				}
+
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+
+	layui.define('layer', function (ApproveEmployPass) { //独立版的layer无需执行这一句
+		ApproveEmployPass('pass', function (id) {
+		var lay = layer.confirm('是否审核通过？', {
+			btn: ['通过', '拒绝', '取消'] //可以无限个按钮
+			, title: ['进行审核', 'text-align:center;'],
+			btn3: function (index, layero) {
+				//按钮【取消】的回调
+				layer.close(lay);
+			}
+		}, function (index, layero) {
+			//按钮【通过】的回调
+			var url = '@DomainUrlHelper.EmployeeBgPath/api/UserApi/ApproveEmployPass?status=2&id=' + id;
+			PassAjax(url);
+		}, function (index) {
+			//按钮【拒绝】的回调
+			var url = '@DomainUrlHelper.EmployeeBgPath/api/UserApi/ApproveEmployPass?status=1&id=' + id;
+			PassAjax(url);
+		});
+		});
+
+		function PassAjax(url) {
+			var layId;
+			$.ajax({
+				type: 'POST',
+				url: url,
+				beforeSend: function () {
+					layId = layer.load(2);
+				},
+				success: function (dat) {
+					if (dat.ErrorCode == "E000") {
+						layer.msg('审核完成！', { time: 1500 }, function () {
+							location.reload();
+						});
+					} else {
+						layer.alert(dat.ErrorMessage, {
+							icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
+							skin: 'layer-ext-moon'
+						});
+					}
+				},
+				error: function (a, b, c) {
+				},
+				complete: function () {
+					layer.close(layId);
+				}
+			});
+		//})
+		}
+	});
+
+
+
+	//function ApproveEmployPass(id) {
+
+	//}
+
+	//function PassAjax(url, obj) {
+	//	var layId;
+	//	$.ajax({
+	//		type: 'POST',
+	//		url: url,
+	//		beforeSend: function () {
+	//			layId = layer.load(2);
+	//		},
+	//		success: function (dat) {
+	//			if (dat.ErrorCode == "E000") {
+	//				layer.msg('审核完成！', function () {
+	//					$(id).remove();
+	//				});
+	//			} else {
+	//				layer.alert(dat.ErrorMessage, {
+	//					icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
+	//					skin: 'layer-ext-moon'
+	//				});
+	//			}
+	//		},
+	//		error: function (a, b, c) {
+	//		},
+	//		complete: function () {
+	//			layer.closeAll();
+	//		}
+	//	});
+	//}
+</script>

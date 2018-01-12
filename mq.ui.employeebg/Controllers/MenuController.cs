@@ -49,7 +49,9 @@ namespace mq.ui.EmployeeWebSite.Controllers
         {
             string errorCode = CommonHelper.GetPostValue("ErrorCode");
             string errorMessage = CommonHelper.GetPostValue("ErrorMsg");
-            ViewBag.errorCode = errorCode;
+			errorMessage = HttpUtility.UrlDecode(errorMessage);
+
+			ViewBag.errorCode = errorCode;
             ViewBag.errorMessage = errorMessage;
             return View("~/Views/Share/Error.cshtml");
         }

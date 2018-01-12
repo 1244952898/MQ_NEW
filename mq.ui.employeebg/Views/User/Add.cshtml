@@ -1,9 +1,9 @@
 ﻿@using mq.application.webmvc
-@using mq.model.dbentity
+@using mq.application.common;
 @model mq.model.viewentity.employeebg.UserAddEntity
 @{
-    ViewBag.Title = "添加员工";
-    Layout = "~/Views/Share/_Menu.cshtml";
+	ViewBag.Title = ViewBag.add ? "添加员工信息" : "修改员工信息";
+	Layout = "~/Views/Share/_Menu.cshtml";
 }
 @section head{
     <style type="text/css">
@@ -41,7 +41,7 @@
                     <i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>用户名：
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" name="realname" id="realname" lay-verify="required|name|realname" placeholder="请输入用户名" class="layui-input">
+                    <input type="text" name="realname" id="realname" lay-verify="required|name|realname" placeholder="请输入用户名" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.RealName)">
                 </div>
                 <div class="layui-form-mid layui-word-aux" id="usernamemsg">请与身份证上一致，切不超过八个汉字！</div>
             </div>
@@ -51,8 +51,22 @@
 					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>性 别：
 				</label>
 				<div class="layui-input-block">
-					<input type="radio" name="gender" value="0" title="男" checked="">
-					<input type="radio" name="gender" value="1" title="女">
+					@{ 
+						string m = string.Empty;
+						string w =string.Empty;
+						if (ViewBag.add || Model.BgUser==null || Model.BgUser.Gender==0)
+						{
+							m = "checked=\"\"";
+							w = "";
+						}
+						else
+						{
+							m = "";
+							w = "checked=\"\"";
+						}
+					}
+					<input type="radio" name="gender" value="0" title="男" @m>
+					<input type="radio" name="gender" value="1" title="女" @w>
 				</div>
 			</div>
 
@@ -64,9 +78,19 @@
 					<select name="positionId" lay-filter="juese">
 						@if (Model.PositionList != null && Model.PositionList.Count > 0)
 						{
+							string select = string.Empty;
 							for (int i = 0; i < Model.PositionList.Count; i++)
 							{
-								<option value="@Model.PositionList[i].PositionId" @(i == 0 ? "selected=\"\"" : "")>@Model.PositionList[i].PositionName</option>
+								select = ((ViewBag.add || Model.BgUser == null)&& i == 0)|| Model.PositionList[i].PositionId == Model.BgUser.PositionId ? "selected=\"\"" : "";
+								//if (ViewBag.add|| Model.BgUser==null)
+								//{
+								//	select = i == 0 ? "selected=\"\"" : "";
+								//}
+								//else
+								//{
+								//	select = Model.PositionList[i].PositionId == Model.BgUser.PositionId ? "selected=\"\"" : "";
+								//}
+								<option value="@Model.PositionList[i].PositionId" @(select)>@Model.PositionList[i].PositionName</option>
 							}
 						}
 					</select>
@@ -79,7 +103,7 @@
 						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>入职日期：
 					</label>
 					<div class="layui-input-inline">
-						<input type="text" name="entryDate" lay-verify="required" id="date" autocomplete="off" class="layui-input">
+						<input type="text" name="entryDate" lay-verify="required" id="date" autocomplete="off" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.EntryDate.ToDateTime(DateTime.MinValue).ToString("yyyy-MM-dd"))">
 					</div>
 					<div class="layui-form-mid layui-word-aux">有效范围：当前日期的35天内！</div>
 				</div>
@@ -90,7 +114,7 @@
 					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>身 份 证：
 				</label>
 				<div class="layui-input-inline">
-					<input type="text" name="identity" lay-verify="identity" placeholder="" autocomplete="off" class="layui-input">
+					<input type="text" name="identity" lay-verify="identity" placeholder="" autocomplete="off" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.IP)">
 				</div>
 				<div class="layui-form-mid layui-word-aux">请与身份证保持一致，18位！</div>
 			</div>
@@ -101,7 +125,7 @@
 						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>手机号码：
 					</label>
 					<div class="layui-input-inline">
-						<input type="tel" name="phone" lay-verify="required|phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+						<input type="tel" name="phone" lay-verify="required|phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.Phone)">
 					</div>
 				</div>
 			</div>
@@ -112,9 +136,11 @@
 					<select name="educationId" lay-filter="juese">
 						@if (Model.ShortStaticFieldList != null && Model.ShortStaticFieldList.Count > 0)
 						{
+							string select = string.Empty;
 							for (int i = 0; i < Model.ShortStaticFieldList.Count; i++)
 							{
-								<option value="@Model.ShortStaticFieldList[i].ShortId" @(i == 0 ? "selected=\"\"" : "")>@Model.ShortStaticFieldList[i].ShortName</option>
+								select = ((ViewBag.add || Model.BgUser == null) && i == 0) || Model.ShortStaticFieldList[i].ShortId == Model.BgUser.EducationId ? "selected=\"\"" : "";
+								<option value="@Model.ShortStaticFieldList[i].ShortId" @(select)>@Model.ShortStaticFieldList[i].ShortName</option>
 							}
 						}
 					</select>
@@ -129,9 +155,11 @@
 					<select name="householdId" lay-filter="juese">
 						@if (Model.CardFieldList != null && Model.CardFieldList.Count > 0)
 						{
+							string select = string.Empty;
 							for (int i = 0; i < Model.CardFieldList.Count; i++)
 							{
-								<option value="@Model.CardFieldList[i].ShortId" @(i == 0 ? "selected=\"\"" : "")>@Model.CardFieldList[i].ShortName</option>
+								select = ((ViewBag.add || Model.BgUser == null) && i == 0) || Model.CardFieldList[i].ShortId == Model.BgUser.HouseholdId ? "selected=\"\"" : "";
+								<option value="@Model.CardFieldList[i].ShortId" @(select)>@Model.CardFieldList[i].ShortName</option>
 							}
 						}
 					</select>
@@ -141,7 +169,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">毕业学校:</label>
 				<div class="layui-input-inline">
-					<input type="text" name="school" id="school" lay-verify="usercheck" placeholder="毕业学校" class="layui-input">
+					<input type="text" name="school" id="school" lay-verify="usercheck" placeholder="毕业学校" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.School)">
 				</div>
 			</div>
 
@@ -151,7 +179,7 @@
 						<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>Email邮箱：
 					</label>
 					<div class="layui-input-inline">
-						<input type="text" name="email" lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+						<input type="text" name="email" lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.Email)">
 					</div>
 					<div class="layui-form-mid layui-word-aux">请输入真实邮箱，用于找回密码或者接收文件</div>
 				</div>
@@ -162,7 +190,7 @@
 					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>紧急联系人及电话:
 				</label>
 				<div class="layui-input-inline">
-					<input type="text" name="emergency" id="emergency" lay-verify="usercheck" placeholder="请输入紧急联系人及电话" class="layui-input">
+					<input type="text" name="emergency" id="emergency" lay-verify="usercheck" placeholder="请输入紧急联系人及电话" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.Emergency)">
 				</div>
 				<div class="layui-form-mid layui-word-aux">如：xxx：18812345678</div>
 			</div>
@@ -172,7 +200,7 @@
 					<i class="layui-icon" style="font-size: 3px; color: #ff0000;">&#xe600;</i>现 住 址:
 				</label>
 				<div class="layui-input-inline">
-					<input type="text" name="address" id="address" lay-verify="required"  placeholder="请输入现住址" class="layui-input">
+					<input type="text" name="address" id="address" lay-verify="required"  placeholder="请输入现住址" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.Address)">
 				</div>
 				<div class="layui-form-mid layui-word-aux">注：最多20个汉字</div>
 			</div>
@@ -180,7 +208,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">备 注:</label>
 				<div class="layui-input-inline">
-					<input type="text" style="width:500px;" name="remark" id="remark" lay-verify="usercheck" placeholder="备注" class="layui-input">
+					<input type="text" style="width:500px;" name="remark" id="remark" lay-verify="usercheck" placeholder="备注" class="layui-input" value="@(ViewBag.add ? "" : Model.BgUser==null?"":Model.BgUser.Remark)">
 				</div>
 			</div>
 
@@ -261,7 +289,11 @@
 					pars.school = encodeURIComponent(pars.school);
 					pars.emergency = encodeURIComponent(pars.emergency);
 					pars.address = encodeURIComponent(pars.address);
-					pars.remark = encodeURIComponent(pars.remark);
+					if (pars.remark != undefined || pars.remark == '备注') {
+						pars.remar == '';
+					} else {
+						pars.remark = encodeURIComponent(pars.remark);
+					}
 					
                     $.ajax({
                         type: 'POST',

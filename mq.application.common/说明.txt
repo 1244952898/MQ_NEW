@@ -6,8 +6,9 @@
 ========================================================================
 ========================================================================
 
-员工添加http://localhost:12345/employeebg/user/add
-登录：http://localhost:12345/publicmessage/Login/Login
+工资考勤-员工添加信息：http://localhost:12345/employeebg/user/add
+工资考勤-员工修改信息：http://localhost:12345/employeebg/user/add?id=8
+工资考勤-登录：http://localhost:12345/publicmessage/Login/Login
 工资考勤-员工信息：http://localhost:12345/employeebg/user/EmployList
 工资考勤-员工审核：http://localhost:12345/employeebg/user/ApproveEmploy
 ========================================================================

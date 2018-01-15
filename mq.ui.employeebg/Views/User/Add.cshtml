@@ -81,15 +81,15 @@
 							string select = string.Empty;
 							for (int i = 0; i < Model.PositionList.Count; i++)
 							{
-								select = ((ViewBag.add || Model.BgUser == null)&& i == 0)|| Model.PositionList[i].PositionId == Model.BgUser.PositionId ? "selected=\"\"" : "";
-								//if (ViewBag.add|| Model.BgUser==null)
-								//{
-								//	select = i == 0 ? "selected=\"\"" : "";
-								//}
-								//else
-								//{
-								//	select = Model.PositionList[i].PositionId == Model.BgUser.PositionId ? "selected=\"\"" : "";
-								//}
+								//select = ((ViewBag.add || Model.BgUser == null)&& i == 0)|| (Model.BgUser != null&&Model.PositionList[i].PositionId == Model.BgUser.PositionId) ? "selected=\"\"" : "";
+								if (ViewBag.add || Model.BgUser == null)
+								{
+									select = i == 0 ? "selected=\"\"" : "";
+								}
+								else
+								{
+									select = Model.PositionList[i].PositionId == Model.BgUser.PositionId ? "selected=\"\"" : "";
+								}
 								<option value="@Model.PositionList[i].PositionId" @(select)>@Model.PositionList[i].PositionName</option>
 							}
 						}
@@ -139,7 +139,15 @@
 							string select = string.Empty;
 							for (int i = 0; i < Model.ShortStaticFieldList.Count; i++)
 							{
-								select = ((ViewBag.add || Model.BgUser == null) && i == 0) || Model.ShortStaticFieldList[i].ShortId == Model.BgUser.EducationId ? "selected=\"\"" : "";
+								//select = ((ViewBag.add || Model.BgUser == null) && i == 0) || (Model.ShortStaticFieldList != null && Model.ShortStaticFieldList[i].ShortId == Model.BgUser.EducationId) ? "selected=\"\"" : "";
+								if (ViewBag.add || Model.BgUser == null)
+								{
+									select = i == 0 ? "selected=\"\"" : "";
+								}
+								else
+								{
+									select = Model.ShortStaticFieldList[i].ShortId == Model.BgUser.PositionId ? "selected=\"\"" : "";
+								}
 								<option value="@Model.ShortStaticFieldList[i].ShortId" @(select)>@Model.ShortStaticFieldList[i].ShortName</option>
 							}
 						}
@@ -158,7 +166,15 @@
 							string select = string.Empty;
 							for (int i = 0; i < Model.CardFieldList.Count; i++)
 							{
-								select = ((ViewBag.add || Model.BgUser == null) && i == 0) || Model.CardFieldList[i].ShortId == Model.BgUser.HouseholdId ? "selected=\"\"" : "";
+								//select = ((ViewBag.add || Model.BgUser == null) && i == 0) || (Model.BgUser != null && Model.CardFieldList[i].ShortId == Model.BgUser.HouseholdId)? "selected=\"\"" : "";
+								if (ViewBag.add || Model.BgUser == null)
+								{
+									select = i == 0 ? "selected=\"\"" : "";
+								}
+								else
+								{
+									select = Model.CardFieldList[i].ShortId == Model.BgUser.HouseholdId ? "selected=\"\"" : "";
+								}
 								<option value="@Model.CardFieldList[i].ShortId" @(select)>@Model.CardFieldList[i].ShortName</option>
 							}
 						}
@@ -214,8 +230,11 @@
 
 			<div class="layui-form-item">
 				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit="" lay-filter="demo1">立即注册</button>
-					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<button class="layui-btn" lay-submit="" lay-filter="demo1">@(ViewBag.add || Model.BgUser == null? "立即注册" : "保存修改")</button>
+					@if (ViewBag.add || Model.BgUser == null)
+					{
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					}
 				</div>
 			</div>
 </form>
@@ -259,7 +278,7 @@
                         if (result) {
                             return '该用户名已存在！';
                         }
-                      
+
                     }
                 });
 
@@ -294,10 +313,12 @@
 					} else {
 						pars.remark = encodeURIComponent(pars.remark);
 					}
-					
+					pars.add = '@(ViewBag.add ? "" : Model.BgUser==null?"0":"1")';
+					pars.id = '@(Model.BgUser == null?-1: Model.BgUser.ID)';
+
                     $.ajax({
                         type: 'POST',
-                        url: '@DomainUrlHelper.EmployeeBgPath/User/AddUser',
+						url: '@DomainUrlHelper.EmployeeBgPath/User/AddOrUpdateUser',
                         data: pars,
                         cache: false,
                         //dataType: 'json',
@@ -306,7 +327,7 @@
                         },
                         success: function (dat) {
                             if (dat.ErrorCode == "E000") {
-                                layer.msg('添加成功');
+                                layer.msg('@(ViewBag.add ? "" : Model.BgUser==null? "添加成功" : "修改成功")');
                             } else {
                                 layer.alert(dat.ErrorMessage, {
                                     icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；

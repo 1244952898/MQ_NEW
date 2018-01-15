@@ -78,8 +78,11 @@ namespace mq.ui.employeebg.Controllers
             return PartialView(list);
         }
 
-
-        public JsonResult AddUser()
+		/// <summary>
+		/// 添加或者修改用户
+		/// </summary>
+		/// <returns></returns>
+        public JsonResult AddOrUpdateUser()
         {
             JsonUserAddUserEntity json = new JsonUserAddUserEntity();
             string realname = CommonHelper.GetPostValue("realname");
@@ -95,19 +98,38 @@ namespace mq.ui.employeebg.Controllers
 			string emergency = CommonHelper.GetPostValue("emergency");
 			string address = CommonHelper.GetPostValue("address");
 			string remark = CommonHelper.GetPostValue("remark");
-			if (string.IsNullOrEmpty(realname) || gender == -1 || positionId == -1 || entryDate == DateTime.MaxValue || string.IsNullOrEmpty(identity)|| householdId==-1|| string.IsNullOrEmpty(email) || string.IsNullOrEmpty(emergency) || string.IsNullOrEmpty(address))
+			int add= CommonHelper.GetPostValue("add").ToInt(0);//0=添加 1=修改
+			long id = CommonHelper.GetPostValue("id").ToLong(-1);
+
+			if ((string.IsNullOrEmpty(realname) || gender == -1 || positionId == -1 || entryDate == DateTime.MaxValue || string.IsNullOrEmpty(identity)|| householdId==-1|| string.IsNullOrEmpty(email) || string.IsNullOrEmpty(emergency) || string.IsNullOrEmpty(address))||(add==1&& id<0))
             {
                 json.ErrorCode = "E001";
                 json.ErrorMessage = "参数不全！";
                 return Json(json);
             }
 
-            realname = HttpUtility.UrlDecode(realname);
+			realname = HttpUtility.UrlDecode(realname);
 			school = HttpUtility.UrlDecode(school);
 			emergency = HttpUtility.UrlDecode(emergency);
 			address = HttpUtility.UrlDecode(address);
 			remark = HttpUtility.UrlDecode(remark);
-			T_BG_User user = new T_BG_User();
+
+			T_BG_User user = null;
+			if (add==0)
+			{
+				user = new T_BG_User();
+			}
+			else
+			{
+				user = _bgUserService.GetUserById(id);
+				if (user == null)
+				{
+					json.ErrorCode = "E003";
+					json.ErrorMessage = "未获得该修改对象！";
+					return Json(json);
+				}
+			}
+			
             user.RealName = realname;
             user.Gender = gender;
             user.PositionId = positionId;
@@ -122,25 +144,32 @@ namespace mq.ui.employeebg.Controllers
 			user.Address = address;
 			user.Remark = remark;
 
-			user.DepartmentId = LoginHelper.DepartmentId;
-			user.Status = 0;
-			user.AddTime = DateTime.Now;
-            user.IsDel = 0;
-			user.AreaId = LoginHelper.AreaId;
-			user.ShopID=LoginHelper.ShopID;//这个后期可能需要修改
-			user.RoleID = 2;
-
-            bool result = _bgUserService.Add(user);
-
+			bool result = false;
+			if (add==0)
+			{
+				user.DepartmentId = LoginHelper.DepartmentId;
+				user.Status = 0;
+				user.AddTime = DateTime.Now;
+				user.IsDel = 0;
+				user.AreaId = LoginHelper.AreaId;
+				user.ShopID=LoginHelper.ShopID;//这个后期可能需要修改
+				user.RoleID = 2;
+				result = _bgUserService.Add(user);
+			}
+			else
+			{
+				result = _bgUserService.Update(user);
+			}
+         
             if (result)
             {
                 json.ErrorCode = "E000";
-                json.ErrorMessage = "添加成功！";
+                json.ErrorMessage = "成功！";
             }
             else
             {
                 json.ErrorCode = "E002";
-                json.ErrorMessage = "添加失败！";
+                json.ErrorMessage = "数据库操作失败！";
 
             }
             return Json(json);

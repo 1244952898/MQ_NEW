@@ -2,6 +2,7 @@
 using mq.application.service;
 using mq.application.service.Interface;
 using mq.model.dbentity;
+using mq.model.viewentity;
 using mq.model.viewentity.employeebg;
 using System;
 using System.Collections.Generic;
@@ -99,7 +100,67 @@ namespace mq.ui.employeebg.Controllers
 			user.ApproveTime = DateTime.Now;
 			user.ApproveName = LoginHelper.UserName;
 			bool success = _bgUserService.Update(user);
-			if (true)
+			if (success)
+			{
+				result.ErrorCode = "E000";
+				result.ErrorMessage = "成功";
+			}
+			else
+			{
+				result.ErrorCode = "E003";
+				result.ErrorMessage = "更新失败！";
+			}
+			return result;
+		}
+
+		[System.Web.Http.HttpPost]
+		[System.Web.Http.HttpGet]
+		public JsonLeavePositionEntity LeavePosition() {
+			JsonLeavePositionEntity result = new JsonLeavePositionEntity();
+
+			long id = CommonHelper.GetPostValue("id").ToLong(-1);
+			if (id < 0)
+			{
+				result.ErrorCode = "E001";
+				result.ErrorMessage = "获得信息不全！";
+				return result;
+			}
+
+			T_BG_User user = _bgUserService.GetUserById(id);
+			if (user == null)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "该角色不存在，请刷新页面！";
+				return result;
+			}
+			else if (user.IsDel==1)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "该角色已经被删除，请刷新页面！";
+				return result;
+			}
+			else if (user.Status == 0)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "该员工尚未审核通过，无法离职！";
+				return result;
+			}
+			else if (user.Status == 2)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "该员工尚未审核通过，无法离职！";
+				return result;
+			}
+			else if (user.Status == 3)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "该员已经离职，请刷新页面！";
+				return result;
+			}
+
+			user.Status = 3;
+			bool success = _bgUserService.Update(user);
+			if (success)
 			{
 				result.ErrorCode = "E000";
 				result.ErrorMessage = "成功";

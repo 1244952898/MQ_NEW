@@ -94,7 +94,8 @@
 				<colgroup>
 					<col width="80">
 					<col width="100">
-					<col width="100">
+					<col width="50">
+					<col width="120">
 					<col width="150">
 					<col width="150">
 					<col width="300">
@@ -106,6 +107,7 @@
 					<tr>
 						<th>编号</th>
 						<th>查看详情</th>
+						<th>离职</th>
 						<th>状态</th>
 						<th>真实姓名</th>
 						<th>区域</th>
@@ -145,7 +147,7 @@
 								if (data.UserExtendList != null) {
 									$.each(data.UserExtendList, function (id, obj) {
 										var statusName = obj.Status == 0 ? "未审核" : obj.Status == 1 ? "审核通过" : obj.Status == 2 ? "审核未通过" : obj.Status == 3 ?"离职":"未知数据"
-										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-red" value="离职" onclick="LeavePosition(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
 									});
 								}
 								$('#body').html(ht);
@@ -157,9 +159,52 @@
                         }
                     });
 	}
-
+	//查看员工详细信息
 	function GetDetailMsg(id) {
 		layer.msg('功能待定，联系开发者!');
+	}
+
+	//员工离职
+	function LeavePosition(id) {
+		var lay = layer.confirm('确认该员工离职吗？', {
+			btn: ['确定', '取消'] //可以无限个按钮
+				, title: '提示',
+			btn3: function (index, layero) {
+				//按钮【取消】的回调
+				layer.close(lay);
+			}
+		}, function (index) {
+			//按钮【拒绝】的回调
+			var url = '@DomainUrlHelper.EmployeeBgPath/api/UserApi/LeavePosition?id=' + id;
+
+			var layId;
+			$.ajax({
+				type: 'POST',
+				url: url,
+				beforeSend: function () {
+					layId = layer.load(2);
+				},
+				success: function (dat) {
+					if (dat.ErrorCode == "E000") {
+						layer.msg('成功', function () {
+							location.reload();
+						});
+					} else {
+						layer.alert(dat.ErrorMessage, {
+							icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
+							skin: 'layer-ext-moon'
+						});
+					}
+				},
+				error: function (a, b, c) {
+				},
+				complete: function () {
+					layer.close(layId);
+				}
+			});
+
+		});
+	
 	}
 
 	layui.use(['form', 'layedit', 'laydate'], function () {
@@ -199,6 +244,7 @@
 									});
 								}
 								$('#shop').html(ht);
+								layui.form.render('select');
 							} else {
 								layer.msg(data.ErrorMessage);
 							}
@@ -226,7 +272,8 @@
 								var ht = '';
 								if (data.UserExtendList != null) {
 									$.each(data.UserExtendList, function (id, obj) {
-										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+										var statusName = obj.Status == 0 ? "未审核" : obj.Status == 1 ? "审核通过" : obj.Status == 2 ? "审核未通过" : obj.Status == 3 ? "离职" : "未知数据"
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-red" value="离职" onclick="LeavePosition(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
 									});
 								}
 								$('#body').html(ht);

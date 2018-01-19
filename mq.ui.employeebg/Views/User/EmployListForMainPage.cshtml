@@ -1,0 +1,341 @@
+﻿@model mq.model.viewentity.employeebg.UserEmployListEntity
+@using mq.application.webmvc
+@using System.Web.Optimization
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>员工信息</title>
+	<style type="text/css">
+		.layui-row {
+			margin: 10px;
+			padding: 15px;
+			background-color: #f2f2f2;
+		}
+
+		.layui-form-item .layui-input-inline {
+			width: 290px;
+		}
+
+		.layui-form-label {
+			width: 60px;
+		}
+
+		.layui-icon {
+			margin-right: 5px;
+		}
+
+		.layui-col-md2 {
+			width: 20%;
+		}
+	</style>
+	@*这个放入单独测试这个页面打开*@
+	@Styles.Render("~/libs/layui-2.0/css/layui")
+	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")
+</head>
+<body>
+	<div class="" style="margin-left: 0px;">
+		<div class="layui-row">
+			<form class="layui-form" action="">
+				<div class="layui-col-md2">
+					<label class="layui-form-label">区 域：</label>
+					<div class="layui-input-inline">
+						<select name="areaId" lay-filter="area">
+							<option value="-1">请选择</option>
+							@if (Model.AreaList != null && Model.AreaList.Count > 0)
+							{
+								for (int i = 0; i < Model.AreaList.Count; i++)
+								{
+									string select = Model.AreaList[i].ID == ViewBag.areaId ? "selected=\"\"" : "";
+									<option value="@Model.AreaList[i].ID" @(select)>@Model.AreaList[i].AreaName</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+				<div class="layui-col-md2">
+					<label class="layui-form-label">店 铺：</label>
+					<div class="layui-input-inline">
+						<select name="shopId" id="shop" lay-filter="shop">
+							<option value="-1">请选择</option>
+							@if (Model.ShopList != null && Model.ShopList.Count > 0)
+							{
+								for (int i = 0; i < Model.ShopList.Count; i++)
+								{
+									string select = Model.ShopList[i].ID == ViewBag.shopID ? "selected=\"\"" : "";
+									<option value="@Model.ShopList[i].ID" @(i == 0 ? "selected=\"\"" : "")>@Model.ShopList[i].Name</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<div class="layui-input-inline" style="margin-right:0;margin-left: 25px;">
+								<input type="tel" name="realName" autocomplete="off" class="layui-input">
+							</div>
+							<label class="layui-form-label" style="padding-left: 5px;">员工姓名</label>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md1">
+					<button class="layui-btn" lay-submit="" lay-filter="search">查 找</button>
+				</div>
+
+				<div class="layui-col-md1">
+					<input type="button" class="layui-btn layui-bg-orange" onclick="AddUser();" value="添加员工" />
+				</div>
+				<div class="layui-col-md1">
+					<input type="button" class="layui-btn layui-bg-gray" onclick="GetUserData(3);" value="已离职员工" />
+				</div>
+			</form>
+		</div>
+		<div class="layui-row layui-form">
+			<table class="layui-table">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="50">
+					<col width="120">
+					<col width="150">
+					<col width="150">
+					<col width="300">
+					<col width="100">
+					<col width="100">
+					<col width="400">
+					<col width="400">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>编号</th>
+						<th>查看详情</th>
+						<th>离职</th>
+						<th>状态</th>
+						<th>真实姓名</th>
+						<th>区域</th>
+						<th>店铺名称</th>
+						<th>职务</th>
+						<th>员工调动</th>
+						<th>现住址</th>
+						<th>备注</th>
+					</tr>
+				</thead>
+				<tbody id="body"></tbody>
+			</table>
+		</div>
+	</div>
+	<script>
+	$(function () {
+		GetUserData(-1);
+	});
+
+	//查看员工详细信息
+	function GetDetailMsg(id) {
+		layer.msg('功能待定，联系开发者!');
+	}
+
+	//员工离职
+	function LeavePosition(id) {
+		var lay = layer.confirm('确认该员工离职吗？', {
+			btn: ['确定', '取消'] //可以无限个按钮
+				, title: '提示',
+			btn3: function (index, layero) {
+				//按钮【取消】的回调
+				layer.close(lay);
+			}
+		}, function (index) {
+			//按钮【拒绝】的回调
+			var url = '@DomainUrlHelper.EmployeeBgPath/api/UserApi/LeavePosition?id=' + id;
+
+			var layId;
+			$.ajax({
+				type: 'POST',
+				url: url,
+				beforeSend: function () {
+					layId = layer.load(2);
+				},
+				success: function (dat) {
+					if (dat.ErrorCode == "E000") {
+						layer.msg('成功', function () {
+							location.reload();
+						});
+					} else {
+						layer.alert(dat.ErrorMessage, {
+							icon: 2, //第三方扩展皮肤0=！；1=对勾；2=X;3=?;4=锁；5=哭脸；6=笑脸；
+							skin: 'layer-ext-moon'
+						});
+					}
+				},
+				error: function (a, b, c) {
+				},
+				complete: function () {
+					layer.close(layId);
+				}
+			});
+
+		});
+		}
+
+		//员工调动
+		layui.define(['layer'], function (ChangePosition) {
+			//do something
+			var layer = layui.layer;
+			ChangePosition('ChangePosition', function (id) {
+				layer.open({
+				title: ['员工调动', 'text-align:center;background-color:#5FB878;font-weight:bold;color:white;font-size:16px;']
+				,type: 2
+				,content:'@Url.Action("ChangeUserEmploy")'
+				, btn: ['确定', '取消']
+				, btnAlign: 'c'
+				, area: ['425px', '500px']
+				, shadeClose: true
+				, yes: function (layero, index) {
+					//var body = layero.getChildFrame('body', index);
+					var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+					console.log(body.html()) //得到iframe页的body内容
+					var areaId = body.find('#area').val()
+					var shopId = body.find('#shop').val()
+					if (shopId < 0) {
+						layer.msg('请选择店铺！');
+						return false;
+					}
+				}
+				, btn2: function (index, layero) {
+					//按钮【取消】的回调
+				}
+			});
+			});
+		});
+
+
+
+
+	layui.use(['form', 'layedit', 'laydate'], function () {
+		var form = layui.form,
+			layer = layui.layer,
+			laydate = layui.laydate;
+
+		//调用用这个页面需要重新刷新下拉框才能加载页面
+		form.render('select');
+
+
+		//自定义验证规则
+		form.verify({
+			pass: [/(.+){6,12}$/, '密码必须6到12位'],
+			username: [/^[a-zA-Z0-9]{6,12}$/, '必须为6到12位数字或者字母'],
+			name: [/^[\u4e00-\u9fa5]{0,8}$/, '必须汉字且不能超过8个字符'],
+			realname: function (value, item) {
+				if (value.length > 16) {
+					return '不能超过8个字符！';
+				}
+			}
+		});
+
+		form.on('select(area)', function (data) {
+			var id = data.value;
+			if (id.areaId==-1) {
+				var ht = '<option value="-1" selected="">请选择</option>';
+				$('#shop').html(ht);
+				return;
+			}
+			$.ajax({
+				type: 'POST',
+				url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetShopByAreaId?areaId=' + id,
+                        cache: false,
+						success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '<option value="-1" selected="">请选择</option>';
+								if (data.ShopList != null) {
+									$.each(data.ShopList, function (id, obj) {
+										ht += '<option value="' + obj.ID + '">' + obj.Name + '</option>'
+									});
+								}
+								$('#shop').html(ht);
+								layui.form.render('select');
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+
+                        },
+                        error: function (a, b, c) {
+                        }
+                    });
+                });
+
+                //监听提交
+                var layId;
+				form.on('submit(search)', function (data) {
+                    var pars = data.field;
+                    $.ajax({
+                        type: 'POST',
+						url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList',
+                        data: pars,
+                        cache: false,
+                        beforeSend: function () {
+                            layId = layer.load(2);
+                        },
+                        success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '';
+								if (data.UserExtendList != null) {
+									$.each(data.UserExtendList, function (id, obj) {
+										var statusName = obj.Status == 0 ? "未审核" : obj.Status == 1 ? "审核通过" : obj.Status == 2 ? "审核未通过" : obj.Status == 3 ? "离职" : "未知数据"
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-red" value="离职" onclick="LeavePosition(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-orange" value="员工调动" onclick="layui.ChangePosition(' + obj.ID + ');"/></td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+									});
+								}
+								$('#body').html(ht);
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+						},
+                        error: function (a, b, c) {
+                        },
+                        complete: function () {
+                            layer.close(layId);
+                        }
+                    });
+                    return false;
+                });
+	});
+
+	//获取用户信息
+	function GetUserData(status) {
+		var url;
+		if (status == undefined||status<0) {
+			url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList?areaId=@(ViewBag.areaId)&shopId=@(ViewBag.shopID)';
+		} else {
+			url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList?status=' + status;
+		}
+		$.ajax({
+				type: 'POST',
+				url: url,
+						success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '';
+								if (data.UserExtendList != null) {
+									$.each(data.UserExtendList, function (id, obj) {
+										var statusName = obj.Status == 0 ? "未审核" : obj.Status == 1 ? "审核通过" : obj.Status == 2 ? "审核未通过" : obj.Status == 3 ?"离职":"未知数据"
+										ht += '<tr><td>' + (id + 1) + '</td ><td><input type="button" class="layui-btn layui-btn-xs" value="查看详情" onclick="GetDetailMsg(' + obj.ID + ');"/></td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-red" value="离职" onclick="LeavePosition(' + obj.ID + ');"/></td><td>' + statusName + '</td><td>' + obj.RealName + '</td><td>' + obj.AreaName + '</td><td>' + obj.ShopName + '</td><td>' + obj.PositionName + '</td><td><input type="button" class="layui-btn layui-btn-xs layui-bg-orange" value="员工调动" onclick="layui.ChangePosition(' + obj.ID + ');"/></td><td>' + obj.Address + '</td><td>' + obj.Remark + '</td></tr >';
+									});
+								}
+								$('#body').html(ht);
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+                        },
+                        error: function (a, b, c) {
+                        }
+                    });
+	}
+
+	//添加员工链接
+	function AddUser() {
+		location.href = '@Url.Action("Add")';
+	}
+	</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+﻿@using mq.model.dbentity
+@model IEnumerable<T_BG_Menu>
+@{
+	var grade1 = Model != null ? Model.Where(o => o.Grade == 1).ToList() : null;
+	var grade2 = Model != null ? Model.Where(o => o.Grade == 2).ToList() : null;
+	var channelId = ViewBag.ChannelId;
+}
+<ul class="layui-nav layui-nav-tree" lay-filter="demolf" id="leftMenu">
+	@if (grade1 != null && grade1.Any())
+	{
+		foreach (var menu in grade1)
+		{
+			var thisGrade2 = grade2.Where(m => m.Parent_ID == menu.ID);
+			var bgMenus = thisGrade2 as T_BG_Menu[] ?? thisGrade2.ToArray();
+			var selectIndex = thisGrade2.ToList().FindIndex(m => m.ID == channelId);
+			var fcls = selectIndex >= 0 ? "layui-this" : string.Empty;
+			var index = 0;
+			<li class="layui-nav-item @(string.IsNullOrEmpty(fcls) ? "" : "layui-nav-itemed")">
+				<a class="" href="javascript:void(0);">@menu.Name</a>
+				@if (bgMenus.Any())
+				{
+					<dl class="layui-nav-child">
+						@*<dd class="layui-this">
+							<a href="javascript:;" data-id="-999" data-url="http://localhost:12345/employeebg/test/a">测试弹窗1</a>
+						</dd>*@
+						@foreach (var item2 in bgMenus)
+						{
+							index++;
+							var cls = index == 1 ? "first" : "";
+							var urlStr = string.Format("{0}{1}{2}", Url.Content("~/"), string.IsNullOrEmpty(item2.URL) ? "" : item2.URL.Trim(), !string.IsNullOrEmpty(item2.URL) && item2.URL.IndexOf("?", StringComparison.Ordinal) != -1 ? string.Format("&cid={0}", item2.ID) : string.Format("?cid={0}", item2.ID));
+							//var url = string.IsNullOrEmpty(item2.URL) ? "" : item2.URL.Trim() + (!string.IsNullOrEmpty(item2.URL) && item2.URL.IndexOf("?", StringComparison.Ordinal) != -1 ? string.Format("&cid={0}", item2.ID) : string.Format("?cid={0}", item2.ID));
+							<dd class="@(fcls)">
+								<a href="javascript:;" data-id="@(item2.ID)" data-url="@urlStr">@(item2.Name)</a>
+							</dd>
+						}
+					</dl>
+				}
+			</li>
+		}
+	}
+</ul>

@@ -1,0 +1,121 @@
+﻿@using mq.application.webmvc
+@using System.Web.Optimization
+@model mq.model.viewentity.employeebg.UserEmployListEntity
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>调动</title>
+	@*这个放入单独测试这个页面打开*@
+	@Styles.Render("~/libs/layui-2.0/css/layui")
+	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")
+</head>
+<body>
+	<form class="layui-form" action=""style="width: 380px;height: 350px;padding-top: 30px;">
+		<div class="layui-form-item">
+			<label class="layui-form-label">区 域：</label>
+			<div class="layui-input-inline">
+				<select name="areaId" lay-filter="area" id="area">
+					<option value="-1">请选择</option>
+					@if (Model.AreaList != null && Model.AreaList.Count > 0)
+					{
+						for (int i = 0; i < Model.AreaList.Count; i++)
+						{
+							string select = i==0 ? "selected=\"\"" : "";
+							<option value="@Model.AreaList[i].ID" @(select)>@Model.AreaList[i].AreaName</option>
+						}
+					}
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">店 铺：</label>
+			<div class="layui-input-inline">
+				<select name="shopId" id="shop" lay-filter="shop">
+					<option value="-1" selected="">请选择</option>
+					@if (Model.ShopList != null && Model.ShopList.Count > 0)
+					{
+						for (int i = 0; i < Model.ShopList.Count; i++)
+						{
+							<option value="@Model.ShopList[i].ID">@Model.ShopList[i].Name</option>
+						}
+					}
+				</select>
+			</div>
+		</div>
+	</form>
+	<script>
+	layui.use(['form', 'layedit', 'laydate'], function () {
+		var form = layui.form,
+			layer = layui.layer,
+			laydate = layui.laydate;
+		
+	
+		form.on('select(area)', function (data) {
+			var id = data.value;
+			if (id.areaId==-1) {
+				var ht = '<option value="-1" selected="">请选择</option>';
+				$('#shop').html(ht);
+				return;
+			}
+			$.ajax({
+				type: 'POST',
+				url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetShopByAreaId?areaId=' + id,
+                        cache: false,
+						success: function (data) {
+							if (data.ErrorCode == "E000") {
+								var ht = '<option value="-1" selected="">请选择</option>';
+								if (data.ShopList != null) {
+									$.each(data.ShopList, function (id, obj) {
+										ht += '<option value="' + obj.ID + '">' + obj.Name + '</option>'
+									});
+								}
+								$('#shop').html(ht);
+								layui.form.render('select');
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+
+                        },
+                        error: function (a, b, c) {
+                        }
+                    });
+                });
+
+                //监听提交
+                var layId;
+				form.on('submit(search)', function (data) {
+                    var pars = data.field;
+                    $.ajax({
+                        type: 'POST',
+						url: '@(DomainUrlHelper.EmployeeBgPath)',
+                        data: pars,
+                        cache: false,
+                        beforeSend: function () {
+                            layId = layer.load(2);
+                        },
+                        success: function (data) {
+							if (data.ErrorCode == "E000") {
+								
+							} else {
+								layer.msg(data.ErrorMessage);
+							}
+						},
+                        error: function (a, b, c) {
+                        },
+                        complete: function () {
+                            layer.close(layId);
+                        }
+                    });
+                    return false;
+                });
+	});
+
+	</script>
+</body>
+</html>

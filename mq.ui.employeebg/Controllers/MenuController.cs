@@ -45,7 +45,20 @@ namespace mq.ui.EmployeeWebSite.Controllers
             return PartialView(menuList);
         }
 
-        public ActionResult Error()
+		/// <summary>
+		/// 为_MainPage母版页准备的侧面导航栏
+		/// </summary>
+		/// <returns></returns>
+		public ActionResult LeftMainPage()
+		{
+			int channelId = CommonHelper.GetPostValue("cid").ToInt(0);
+			ViewBag.ChannelId = channelId;
+			long userId = LoginHelper.UserId;
+			var menuList = _bgMenuService.GetBgMenuByUserId(1);
+			return PartialView(menuList);
+		}
+
+		public ActionResult Error()
         {
             string errorCode = CommonHelper.GetPostValue("ErrorCode");
             string errorMessage = CommonHelper.GetPostValue("ErrorMsg");

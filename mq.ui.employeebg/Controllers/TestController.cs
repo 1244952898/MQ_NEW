@@ -25,5 +25,10 @@ namespace mq.ui.employeebg.Controllers
                 return Json(new { Code = "E000", Msg = data }, JsonRequestBehavior.AllowGet); 
 			}
 		}
+
+		public ActionResult MainTest()
+		{
+			return View();
+		}
 	}
 }

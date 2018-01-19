@@ -1,0 +1,197 @@
+﻿@using System.Web.Optimization
+@using koala.application.common
+@using mq.application.common
+@using mq.application.webmvc
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>麦尔奎斯后台管理系统</title>
+	@Styles.Render("~/libs/layui-2.0/css/layui")
+	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")
+	@*@RenderSection("head", false)*@
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-header">
+			<div class="layui-logo">MAXQUILL| 麦斯奎尔</div>
+			<ul class="layui-nav layui-layout-left">
+				<li class="layui-nav-item"><a href="">功 能1</a></li>
+				<li class="layui-nav-item"><a href="">功 能2</a></li>
+				<li class="layui-nav-item"><a href="">功 能3</a></li>
+				<li class="layui-nav-item">
+					<a href="javascript:;">功 能4</a>
+					<dl class="layui-nav-child">
+						<dd><a href="">子功能</a></dd>
+						<dd><a href="">子功能</a></dd>
+						<dd><a href="">子功能</a></dd>
+					</dl>
+				</li>
+			</ul>
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item">
+					<a href="javascript:;">
+						<img src="http://localhost:12345/resource/Images/MXlogo.jpg" class="layui-nav-img">
+						欢迎您，@LoginHelper.UserName
+					</a>
+					<dl class="layui-nav-child">
+						<dd><a href="">基本资料</a></dd>
+						<dd><a href="">安全设置</a></dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item">
+					<a href="@(DomainUrlHelper.MqWebSiteBg)Home/Logout"> 退出登录</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+				<ul class="layui-nav layui-nav-tree" lay-filter="test">
+					@Html.Action("LeftMainPage", "Menu")
+				</ul>
+			</div>
+		</div>
+
+		<div class="layui-body" style="padding-left: 10px;">
+			<div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+				<ul class="layui-tab-title">
+					<li class="layui-this" lay-id="-1">欢迎页</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<ul class="layui-timeline">
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis"></i>
+								<div class="layui-timeline-content layui-text">
+									<h3 class="layui-timeline-title">今天</h3>
+									<p>麦尔奎斯，从未停止她的脚步 <i class="layui-icon"></i></p>
+								</div>
+							</li>
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis"></i>
+								<div class="layui-timeline-content layui-text">
+									<h3 class="layui-timeline-title">x月xx日</h3>
+									<p>杜甫的思想核心是儒家的仁政思想，他有
+										<em>“致君尧舜上，再使风俗淳”</em>
+									的宏伟抱负。个人最爱的名篇有：
+									</p>
+									<ul>
+										<li>《登高》</li>
+										<li>《茅屋为秋风所破歌》</li>
+									</ul>
+								</div>
+							</li>
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis"></i>
+								<div class="layui-timeline-content layui-text">
+									<h3 class="layui-timeline-title">x月xx日</h3>
+									<p>
+											成立公司
+										<br>由几个发起倡议
+										<br>成立公司
+										<br>第一家店铺开张
+									</p>
+								</div>
+							</li>
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis"></i>
+								<div class="layui-timeline-content layui-text">
+									<div class="layui-timeline-title">过去</div>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</div>
+			@*<div>
+				@RenderBody()
+			</div>*@
+		</div>
+
+		<div class="layui-footer">
+			<!-- 底部固定区域 -->
+			©麦斯奎尔MAXQUILL服饰有限公司
+		</div>
+	
+	</div>
+	<script type="text/javascript">
+		layui.use(['element', 'layer','form'], function () {
+		var $ = layui.jquery;
+		var element = layui.element;
+		var layer = layui.layer;
+		var form = layui.form;
+		var ids = ['-1'];
+		var oldId = -1;
+
+		$('#leftMenu li dl dd a').on('click', function () {
+			var title = $(this).text();
+			var id = $(this).attr('data-id');
+			var url = $(this).attr('data-url');
+
+			if (oldId == id) {
+				return;
+			}
+
+			var isbreak = false;
+			$.each(ids, function (i,item) {
+				if (item == id) {
+					element.tabChange('demo', id); //切换到：用户管理
+					isbreak = true;
+					return false;
+				}
+			});
+
+			if (isbreak)
+				return;
+
+			var layId;
+			$.ajax({
+				type: 'POST',
+				url: url,
+				beforeSend: function () {
+					layId = layer.load(2);
+				},
+				success: function (dat) {
+					ids.push(id);
+				
+					element.tabAdd('demo', {
+						  title: title
+						, content: dat
+						, id: id //实际使用一般是规定好的id，这里以时间戳模拟下
+					})
+					element.tabChange('demo', id); //切换到：用户管理
+				},
+				complete: function () {
+					layer.closeAll();
+				}
+			});
+
+		});
+
+		
+
+		//Hash地址的定位
+		var layid = location.hash.replace(/^#demo=/, '');
+		element.tabChange('demo', layid);
+
+		element.on('tab(demo)', function (elem) {
+			oldId = $(this).attr('lay-id');
+			location.hash = 'demo=' + $(this).attr('lay-id');
+		});
+
+		//删除触发事件
+		element.on('tabDelete(demo)', function (data) {
+			var delId = $(this).parent().attr('lay-id');
+			$('#leftMenu .layui-this').removeClass('layui-this');
+			ids.splice($.inArray(delId, ids), 1);
+		});
+
+	
+		});
+	</script>
+</body>
+</html>

@@ -236,7 +236,30 @@ namespace mq.ui.employeebg.Controllers
             return Json(json);
         }
 
+		/// <summary>
+		/// 母版页的
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult EmployList() {
+			UserEmployListEntity entity = new UserEmployListEntity();
+			entity.AreaList = _areaService.List();
+			long areaId = LoginHelper.AreaId;
+			long shopID = LoginHelper.ShopID;
+			if (entity.AreaList != null && entity.AreaList.Count > 0)
+			{
+				entity.ShopList = _bgShopService.List(areaId);
+			}
+			ViewBag.areaId = areaId;
+			ViewBag.shopID = shopID;
+			return View(entity);
+		}
+
+		/// <summary>
+		/// ForMainPage 的
+		/// </summary>
+		/// <returns></returns>
+		public ActionResult EmployListForMainPage()
+		{
 			UserEmployListEntity entity = new UserEmployListEntity();
 			entity.AreaList = _areaService.List();
 			long areaId = LoginHelper.AreaId;
@@ -256,6 +279,17 @@ namespace mq.ui.employeebg.Controllers
 			long positionId = LoginHelper.PositionId;
 			List<BgUserExtend> ApproveList= _bgUserExtendService.GetApproveList(positionId);
 			return View(ApproveList);
+		}
+
+		public ActionResult ChangeUserEmploy()
+		{
+			UserEmployListEntity entity = new UserEmployListEntity();
+			entity.AreaList = _areaService.List();
+			if (entity.AreaList != null && entity.AreaList.Count > 0)
+			{
+				entity.ShopList = _bgShopService.List(entity.AreaList[0].ID);
+			}
+			return View(entity);
 		}
 	}
 }

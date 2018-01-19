@@ -150,6 +150,7 @@
     <Compile Include="Controllers\DisplayGuideApiController.cs" />
     <Compile Include="Controllers\DisplayGuideController.cs" />
     <Compile Include="Controllers\DisplayPartitionController.cs" />
+    <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\PublicMessageApiController.cs" />
     <Compile Include="Controllers\PublicMessageController.cs" />
@@ -192,6 +193,11 @@
     <Content Include="Views\User\GetPartialList.cshtml" />
     <Content Include="Views\User\EmployList.cshtml" />
     <Content Include="Views\User\ApproveEmploy.cshtml" />
+    <Content Include="Views\Share\_MainPage.cshtml" />
+    <Content Include="Views\Test\MainTest.cshtml" />
+    <Content Include="Views\Menu\LeftMainPage.cshtml" />
+    <Content Include="Views\User\EmployListForMainPage.cshtml" />
+    <Content Include="Views\User\ChangeUserEmploy.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -199,7 +205,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Main\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mq.application.common\mq.application.common.csproj">
       <Project>{f5d724ba-554f-4664-b285-e886ba4a80f2}</Project>

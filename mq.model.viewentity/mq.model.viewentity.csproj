@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Email\JsonMailApiGetModelEntity.cs" />
     <Compile Include="employeebg\JsonAreaAddAreaEntity.cs" />
+    <Compile Include="employeebg\JsonChangePositionEntity.cs" />
     <Compile Include="employeebg\JsonDisplayGuideApiDelEntity.cs" />
     <Compile Include="employeebg\JsonDisplayGuideAptGetListData.cs" />
     <Compile Include="employeebg\JsonGuideFleSaveEntity.cs" />

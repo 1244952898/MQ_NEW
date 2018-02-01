@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="employeebg\ActiveFileDepartmentExtend.cs" />
+    <Compile Include="employeebg\BgChangeUserPositionExtend.cs" />
     <Compile Include="employeebg\UserExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

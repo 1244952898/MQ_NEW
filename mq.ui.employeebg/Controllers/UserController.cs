@@ -12,6 +12,7 @@ using mq.model.viewentity;
 using mq.model.viewentity.employeebg;
 using mq.model.extendedentity;
 using mq.application.webmvc;
+using mq.model.extendedentity.employeebg;
 
 namespace mq.ui.employeebg.Controllers
 {
@@ -27,8 +28,8 @@ namespace mq.ui.employeebg.Controllers
         private readonly IBgPositionService _bgPositionService;
 		private readonly IBgShortStaticFieldService _bgShortStaticFieldService;
 		private readonly IBgUserExtendService _bgUserExtendService;
-
-		public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser, IBgPositionService bgPositionService,IBgShortStaticFieldService bgShortStaticFieldService, IBgUserExtendService bgUserExtendService)
+		private readonly IBgChangeUserPositionExtendService _bgChangeUserPositionExtendService;
+		public UserController(IBgRoleService bgRoleService, IBgAreaService areaService, IBgShopService bgShopService, IBgDepartmentService bgDepartmentService, IBgUserService bgUserService, IBgVUserAreaRoleDepartmentService bgVUser, IBgPositionService bgPositionService,IBgShortStaticFieldService bgShortStaticFieldService, IBgUserExtendService bgUserExtendService,IBgChangeUserPositionExtendService bgChangeUserPositionExtendService)
         {
             _bgRoleService = bgRoleService;
             _areaService = areaService;
@@ -39,6 +40,7 @@ namespace mq.ui.employeebg.Controllers
 			_bgPositionService = bgPositionService;
 			_bgShortStaticFieldService = bgShortStaticFieldService;
 			_bgUserExtendService = bgUserExtendService;
+			_bgChangeUserPositionExtendService = bgChangeUserPositionExtendService;
 		}
 
         // GET: User
@@ -290,6 +292,24 @@ namespace mq.ui.employeebg.Controllers
 				entity.ShopList = _bgShopService.List(entity.AreaList[0].ID);
 			}
 			return View(entity);
+		}
+
+		/// <summary>
+		/// 员工调动审核
+		/// </summary>
+		/// <returns></returns>
+		public ActionResult CheckPosition()
+		{
+			long positionId = LoginHelper.PositionId;
+
+			T_BG_Position position = _bgPositionService.GetByPositionId(positionId);
+			if (position==null||position.Lvl<4)
+			{
+				ViewBag.errorCode = "E001";
+				ViewBag.errorMessage = position == null?"登录用户发生未知错误！":"您无权审核员工调动！";
+			}
+			List<BgChangeUserPositionExtend> list = _bgChangeUserPositionExtendService.GetList(positionId, position.Lvl);
+			return View("~/Views/User/CheckPositionForMainPage.cshtml",list);
 		}
 	}
 }

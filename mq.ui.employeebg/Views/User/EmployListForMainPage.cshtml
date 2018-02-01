@@ -33,8 +33,8 @@
 		}
 	</style>
 	@*这个放入单独测试这个页面打开*@
-	@Styles.Render("~/libs/layui-2.0/css/layui")
-	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")
+	@*@Styles.Render("~/libs/layui-2.0/css/layui")
+	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")*@
 </head>
 <body>
 	<div class="" style="margin-left: 0px;">
@@ -150,7 +150,6 @@
 		}, function (index) {
 			//按钮【拒绝】的回调
 			var url = '@DomainUrlHelper.EmployeeBgPath/api/UserApi/LeavePosition?id=' + id;
-
 			var layId;
 			$.ajax({
 				type: 'POST',
@@ -182,10 +181,10 @@
 
 		//员工调动
 		layui.define(['layer'], function (ChangePosition) {
-			//do something
 			var layer = layui.layer;
-			ChangePosition('ChangePosition', function (id) {
-				layer.open({
+			ChangePosition('ChangePosition', function (userId) {
+			
+				var layId = layer.open({
 				title: ['员工调动', 'text-align:center;background-color:#5FB878;font-weight:bold;color:white;font-size:16px;']
 				,type: 2
 				,content:'@Url.Action("ChangeUserEmploy")'
@@ -193,16 +192,29 @@
 				, btnAlign: 'c'
 				, area: ['425px', '500px']
 				, shadeClose: true
-				, yes: function (layero, index) {
-					//var body = layero.getChildFrame('body', index);
-					var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-					console.log(body.html()) //得到iframe页的body内容
+				, yes: function (index,layero) {
+					var body = layer.getChildFrame('body', index);
 					var areaId = body.find('#area').val()
 					var shopId = body.find('#shop').val()
 					if (shopId < 0) {
 						layer.msg('请选择店铺！');
 						return false;
 					}
+					//console.log(areaId + '  | ' + shopId);
+					var url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/ChangePosition?id=' + userId + '&areaId=' + areaId + '&shopId=' + shopId;
+					$.ajax({
+							type: 'POST',
+							url: url,
+							success: function (data) {
+								if (data.ErrorCode == "E000") {
+									layer.msg('员工调动完成，等待审核中!');
+									layer.close(layId);
+								} else {
+									layer.msg(data.ErrorMessage);
+								}
+							}
+					});
+
 				}
 				, btn2: function (index, layero) {
 					//按钮【取消】的回调

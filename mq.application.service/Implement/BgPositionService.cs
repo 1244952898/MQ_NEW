@@ -30,11 +30,11 @@ namespace mq.application.service.Implement
 		public List<T_BG_Position> GetlistByLvlAndDepartmentId(long positionId, long departmentId) {
 			try
 			{
-				PredicateGroup pmain = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
-				pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.PositionId, Operator.Eq, positionId));
-				pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.IsDel, Operator.Eq, 0));
+				//PredicateGroup pmain = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+				//pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.PositionId, Operator.Eq, positionId));
+				//pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.IsDel, Operator.Eq, 0));
 
-				T_BG_Position position = _bgPositionRepository.GetModel(pmain);
+				T_BG_Position position = GetByPositionId(positionId);
 				if (position==null)
 					return null;
 				string sql = @"
@@ -52,6 +52,21 @@ namespace mq.application.service.Implement
 			{
 			}
 			return null;
+		}
+
+		public T_BG_Position GetByPositionId(long positionId)
+		{
+			try
+			{
+				PredicateGroup pmain = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+				pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.PositionId, Operator.Eq, positionId));
+				pmain.Predicates.Add(Predicates.Field<T_BG_Position>(f => f.IsDel, Operator.Eq, 0));
+				return _bgPositionRepository.GetModel(pmain);
+			}
+			catch (Exception )
+			{
+				return null;
+			}
 		}
 
 	}

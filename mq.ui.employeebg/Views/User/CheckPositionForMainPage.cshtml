@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+@model List< mq.model.extendedentity.employeebg.BgChangeUserPositionExtend >
+@using System.Web.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>员工调动</title>
+	@Styles.Render("~/libs/layui-2.0/css/layui")
+	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")
+</head>
+<body>
+	<div class="" style="margin-left: 0px;">
+		<div class="layui-row layui-form">
+			<table class="layui-table">
+				<colgroup>
+					<col width="80">
+					<col width="100">
+					<col width="100">
+					<col width="100">
+					<col width="200">
+					<col width="200">
+					<col width="200">
+					<col width="200">
+					<col width="100">
+					<col width="100">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>编号</th>
+						<th>姓名</th>
+						<th>职务</th>
+						<th>入职日期</th>
+						<th>现区域</th>
+						<th>现店铺名</th>
+						<th>申请调入区域</th>
+						<th>申请调入铺名</th>
+						<th>调动日期</th>
+						<th>调动审核</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model != null && Model.Count > 0)
+					{
+						for (int i = 0; i < Model.Count; i++)
+						{
+							<tr>
+								<td>[@i]</td>
+								<td>@Model[i].UserName</td>
+								<td>@Model[i].UserAddTime</td>
+								<td>@Model[i].OldAreaId</td>
+								<td>@Model[i].OldShopName</td>
+								<td>@Model[i].NewAreaName</td>
+								<td>@Model[i].NewShopName</td>
+								<td>@Model[i].AddTime</td>
+								<td><input type="button" class="layui-btn layui-btn-xs" value="调动审核" onclick="layui.EnsureCheck('@Model[i].UserName','@Model[i].Id');" /></td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript">
+
+		layui.define(['layer'], function (EnsureCheck) {
+			var layer = layui.layer;
+			EnsureCheck('EnsureCheck', function (name,id) {
+				layer.confirm('是否允许对员工【' + name+'】的调动？', {
+					btn: ['确认', '拒绝调动'] //可以无限个按钮
+					, function(index, layero) {
+						alert(id)
+
+				}, function (index) {
+					
+				})
+			});
+		});
+	</script>
+</body>
+</html>

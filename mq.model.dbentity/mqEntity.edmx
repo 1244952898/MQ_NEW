@@ -31,6 +31,23 @@
           <Property Name="AddTime" Type="datetime" />
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="T_BG_ChangeUserPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="OldAreaId" Type="bigint" Nullable="false" />
+          <Property Name="OldShopId" Type="bigint" Nullable="false" />
+          <Property Name="NewAreaId" Type="bigint" Nullable="false" />
+          <Property Name="NewShopId" Type="bigint" Nullable="false" />
+          <Property Name="AddTime" Type="datetime" Nullable="false" />
+          <Property Name="IsDel" Type="int" Nullable="false" />
+          <Property Name="PassUserId" Type="bigint" Nullable="false" />
+          <Property Name="PassUserName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PassDateTime" Type="datetime" />
+          <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="T_BG_Department">
           <Key>
             <PropertyRef Name="Id" />
@@ -406,6 +423,7 @@
         <EntityContainer Name="POSModelStoreContainer">
           <EntitySet Name="T_BG_ActiveFile" EntityType="Self.T_BG_ActiveFile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Area" EntityType="Self.T_BG_Area" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_BG_ChangeUserPosition" EntityType="Self.T_BG_ChangeUserPosition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_Department" EntityType="Self.T_BG_Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_DisplayGuideFile" EntityType="Self.T_BG_DisplayGuideFile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_BG_DisplayPartition" EntityType="Self.T_BG_DisplayPartition" Schema="dbo" store:Type="Tables" />
@@ -561,6 +579,7 @@
           <EntitySet Name="T_BG_Position" EntityType="POSModel.T_BG_Position" />
           <EntitySet Name="T_Bg_ShortStaticField" EntityType="POSModel.T_Bg_ShortStaticField" />
           <EntitySet Name="T_BG_User" EntityType="POSModel.T_BG_User" />
+          <EntitySet Name="T_BG_ChangeUserPosition" EntityType="POSModel.T_BG_ChangeUserPosition" />
         </EntityContainer>
         <EntityType Name="T_BG_LoginLog">
           <Key>
@@ -947,6 +966,23 @@
           <Property Name="Emergency" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Remark" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="T_BG_ChangeUserPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="OldAreaId" Type="Int64" Nullable="false" />
+          <Property Name="OldShopId" Type="Int64" Nullable="false" />
+          <Property Name="NewAreaId" Type="Int64" Nullable="false" />
+          <Property Name="NewShopId" Type="Int64" Nullable="false" />
+          <Property Name="AddTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsDel" Type="Int32" Nullable="false" />
+          <Property Name="PassUserId" Type="Int64" Nullable="false" />
+          <Property Name="PassUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PassDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1352,6 +1388,24 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_BG_ChangeUserPosition">
+            <EntityTypeMapping TypeName="POSModel.T_BG_ChangeUserPosition">
+              <MappingFragment StoreEntitySet="T_BG_ChangeUserPosition">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PassDateTime" ColumnName="PassDateTime" />
+                <ScalarProperty Name="PassUserName" ColumnName="PassUserName" />
+                <ScalarProperty Name="PassUserId" ColumnName="PassUserId" />
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="NewShopId" ColumnName="NewShopId" />
+                <ScalarProperty Name="NewAreaId" ColumnName="NewAreaId" />
+                <ScalarProperty Name="OldShopId" ColumnName="OldShopId" />
+                <ScalarProperty Name="OldAreaId" ColumnName="OldAreaId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

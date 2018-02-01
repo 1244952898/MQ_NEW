@@ -27,7 +27,7 @@ namespace koala.application.common
         public static string LoginCookiebgUserDepartmentId { get { return "Login_Cookies_bgUserDepartmentId"; } }
         public static string LoginCookiebgUserAreaId { get { return "Login_Cookies_bgUserAreaId"; } }
 
-		
+
 		/// <summary>
 		/// 无需登录验证的页面
 		/// </summary>

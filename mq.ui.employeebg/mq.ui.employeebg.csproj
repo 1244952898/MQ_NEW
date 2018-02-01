@@ -198,6 +198,7 @@
     <Content Include="Views\Menu\LeftMainPage.cshtml" />
     <Content Include="Views\User\EmployListForMainPage.cshtml" />
     <Content Include="Views\User\ChangeUserEmploy.cshtml" />
+    <Content Include="Views\User\CheckPositionForMainPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

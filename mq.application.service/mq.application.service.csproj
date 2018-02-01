@@ -90,6 +90,8 @@
     <Compile Include="Implement\ActiveFileDepartmentExtendService.cs" />
     <Compile Include="Implement\BgActiveFileService.cs" />
     <Compile Include="Implement\BgAreaService.cs" />
+    <Compile Include="Implement\BgChangeUserPositionExtendService.cs" />
+    <Compile Include="Implement\BGChangeUserPositionService.cs" />
     <Compile Include="Implement\BgDepartmentService.cs" />
     <Compile Include="Implement\BgDisplayPartitionService.cs" />
     <Compile Include="Implement\BgEmailRecieverService.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="Implement\BgVUserAreaRoleDepartmentService.cs" />
     <Compile Include="Implement\BgUserExtendService.cs" />
     <Compile Include="Interface\IBgAreaService.cs" />
+    <Compile Include="Interface\IBgChangeUserPositionExtendService.cs" />
+    <Compile Include="Interface\IBGChangeUserPositionService.cs" />
     <Compile Include="Interface\IBgDisplayGuideFileService.cs" />
     <Compile Include="Implement\UserService.cs" />
     <Compile Include="Implement\BgDisplayGuideFileService.cs" />

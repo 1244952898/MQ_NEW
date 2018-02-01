@@ -91,6 +91,8 @@
     <Compile Include="Implement\ActiveFileDepartmentExtendRepository.cs" />
     <Compile Include="Implement\BgActiveFileRepository.cs" />
     <Compile Include="Implement\BgAreaRepository.cs" />
+    <Compile Include="Implement\BgChangeUserPositionExtendRepository.cs" />
+    <Compile Include="Implement\BGChangeUserPositionRepository.cs" />
     <Compile Include="Implement\BgDepartmentRepository.cs" />
     <Compile Include="Implement\BgDisplayGuideFileRepository.cs" />
     <Compile Include="Implement\BgDisplayPartitionRepository.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="Implement\BgVShopAreaUserRepository.cs" />
     <Compile Include="Implement\BgVUserAreaRoleDepartmentRepository.cs" />
     <Compile Include="Implement\BgUserExtendRepository.cs" />
+    <Compile Include="Interface\IBgChangeUserPositionExtendRepository.cs" />
+    <Compile Include="Interface\IBGChangeUserPositionRepository.cs" />
     <Compile Include="Interface\IBgVEmailRecieverRepository.cs" />
     <Compile Include="Interface\IBgAreaRepository.cs" />
     <Compile Include="Interface\IBgDisplayGuideFileRepository.cs" />

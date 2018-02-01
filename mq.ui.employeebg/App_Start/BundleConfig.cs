@@ -157,7 +157,8 @@ namespace MQWebSite
             //layui 2.0
             bundles.Add(new StyleBundle("~/libs/layui-2.0/css/layui", string.Format("{0}/libs/layui-2.0/css/layui.css", sourchPath)).Include("~/libs/layui-2.0/css/layui.css"));
             bundles.Add(new ScriptBundle("~/libs/layui-2.0/layui", string.Format("{0}/libs/layui-2.0/layui.js", sourchPath)).Include("~/libs/layui-2.0/layui.js"));
-            #endregion
-        }
+			bundles.Add(new ScriptBundle("~/libs/layui-2.0/layui.all", string.Format("{0}/libs/layui-2.0/layui.all.js", sourchPath)).Include("~/libs/layui-2.0/layui.all.js"));
+			#endregion
+		}
     }
 }

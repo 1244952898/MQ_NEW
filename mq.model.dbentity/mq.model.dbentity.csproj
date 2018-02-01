@@ -120,6 +120,9 @@
     <Compile Include="T_BG_Area.cs">
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_BG_ChangeUserPosition.cs">
+      <DependentUpon>mqEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_BG_Department.cs">
       <DependentUpon>mqEntity.tt</DependentUpon>
     </Compile>

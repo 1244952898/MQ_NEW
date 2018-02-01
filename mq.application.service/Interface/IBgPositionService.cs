@@ -10,5 +10,6 @@ namespace mq.application.service
 	public interface IBgPositionService
 	{
 		List<T_BG_Position> GetlistByLvlAndDepartmentId(long positionId, long departmentId);
+		T_BG_Position GetByPositionId(long positionId);
 	}
 }

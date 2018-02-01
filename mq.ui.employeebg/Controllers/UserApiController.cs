@@ -20,14 +20,16 @@ namespace mq.ui.employeebg.Controllers
 		private readonly IBgShopService _bgShopService;
 		private readonly IBgUserService _bgUserService;
 		private readonly IBgUserExtendService _bgUserExtendService;
-		
+		private readonly IBGChangeUserPositionService _bgChangeUserPositionService;
 
-		public UserApiController(IBgAreaService areaService, IBgShopService bgShopService, IBgUserService bgUserService, IBgUserExtendService bgUserExtendService)
+
+		public UserApiController(IBgAreaService areaService, IBgShopService bgShopService, IBgUserService bgUserService, IBgUserExtendService bgUserExtendService, IBGChangeUserPositionService bgChangeUserPositionService)
 		{
 			_areaService = areaService;
 			_bgShopService = bgShopService;
 			_bgUserService = bgUserService;
 			_bgUserExtendService = bgUserExtendService;
+			_bgChangeUserPositionService = bgChangeUserPositionService;
 		}
 
 		[System.Web.Http.HttpPost]
@@ -160,6 +162,69 @@ namespace mq.ui.employeebg.Controllers
 
 			user.Status = 3;
 			bool success = _bgUserService.Update(user);
+			if (success)
+			{
+				result.ErrorCode = "E000";
+				result.ErrorMessage = "成功";
+			}
+			else
+			{
+				result.ErrorCode = "E003";
+				result.ErrorMessage = "更新失败！";
+			}
+			return result;
+		}
+
+		public JsonChangePositionEntity ChangePosition() {
+			JsonChangePositionEntity result = new JsonChangePositionEntity();
+			long id = CommonHelper.GetPostValue("id").ToLong(-1);
+			//long oldAreaId = CommonHelper.GetPostValue("oldareaId").ToLong(-1);
+			//long oldShopId = CommonHelper.GetPostValue("oldshopId").ToLong(-1);
+			long newAreaId = CommonHelper.GetPostValue("areaId").ToLong(-1);
+			long newShopId = CommonHelper.GetPostValue("shopId").ToLong(-1);
+			if (id==-1 || newAreaId == -1 || newShopId == -1)
+			{
+				result.ErrorCode = "E001";
+				result.ErrorMessage = "获得信息不全！";
+				return result;
+			}
+
+			T_BG_User user = _bgUserService.GetUserById(id);
+			if (user == null)
+			{
+				result.ErrorCode = "E002";
+				result.ErrorMessage = "未发现该用户！";
+				return result;
+			}
+
+			T_BG_ChangeUserPosition c = _bgChangeUserPositionService.Get(id);
+			if (c!=null&& c.Status==0)
+			{
+				result.ErrorCode = "E003";
+				result.ErrorMessage = "该員工已经调整岗位，正在审核中！";
+				return result;
+			}
+
+			if (user.AreaId==newAreaId&&user.ShopID==newShopId)
+			{
+				result.ErrorCode = "E004";
+				result.ErrorMessage = "该員工已经已经是这个店铺的员工，无需调动！";
+				return result;
+			}
+
+			T_BG_ChangeUserPosition changeUserPosition = new T_BG_ChangeUserPosition();
+			changeUserPosition.UserId = id;
+			changeUserPosition.OldAreaId = user.AreaId.ToLong(-1);
+			changeUserPosition.OldShopId = user.ShopID.ToLong(-1);
+			changeUserPosition.NewAreaId = newAreaId;
+			changeUserPosition.NewShopId = newShopId;
+			changeUserPosition.AddTime = DateTime.Now;
+			changeUserPosition.IsDel = 0;
+			changeUserPosition.PassUserId = -1;
+			changeUserPosition.PassUserName = "";
+			changeUserPosition.Status = 0;
+
+			bool success = _bgChangeUserPositionService.Add(changeUserPosition);
 			if (success)
 			{
 				result.ErrorCode = "E000";

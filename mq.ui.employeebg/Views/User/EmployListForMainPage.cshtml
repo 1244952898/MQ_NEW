@@ -21,31 +21,33 @@
 		}
 
 		.layui-form-label {
-			width: 60px;
+			width: 60px !important;
 		}
 
 		.layui-icon {
 			margin-right: 5px;
 		}
-
 		.layui-col-md2 {
-			width: 20%;
+			width:20%;
 		}
-
 		/*员工姓名下拉框样式*/
 		.layui-elem-field {
-			width: 450px;
+			width: 290px;
 			margin-left: 25px;
 			background-color: white;
 			border: 2px solid lightgrey;
+			z-index: 20000000;
 		}
-		.layui-elem-field .layui-this {
-			background-color: #5FB878 !important;
-			color: #fff !important;
-		}
-		.layui-elem-field .layui-field-box:hover {
-			background-color: #f2f2f2;
-		}
+
+			.layui-elem-field .layui-this {
+				background-color: #5FB878 !important;
+				color: #fff !important;
+			}
+
+			.layui-elem-field .layui-field-box:hover {
+				background-color: #f2f2f2;
+			}
+		/*员工姓名下拉框样式*/
 	</style>
 	@*这个放入单独测试这个页面打开*@
 	@*@Styles.Render("~/libs/layui-2.0/css/layui")
@@ -54,7 +56,7 @@
 </head>
 <body>
 	<div class="" style="margin-left: 0px;">
-		<div class="layui-row">
+		<div class="layui-row" style="height:41px;">
 			<form class="layui-form" action="">
 				<div class="layui-col-md2">
 					<label class="layui-form-label">区 域：</label>
@@ -150,7 +152,7 @@
 		</div>
 	</div>
 	<script>
-		var cookieName = "recentlySearchName";
+		var cookieName = "historyNames";
 		//读取cookie里的名字
 		function GetCookieName() {
 			var list = new Array();
@@ -159,11 +161,11 @@
 			if (cookieNames == null) {
 				html = '<div class="layui-field-box" style="color:#999">没有历史记录</div>';
 			} else {
-				list = JSON.stringify(cookieNames);
+				list = JSON.parse(cookieNames);
 				$.each(list, function (i,item) {
-					html += '<div class="layui-field-box layui-words' + (i == 0 ? 'layui-this' : '') + '">' + item +'</div>';
+					html += '<div onclick="SelecthistoryWords(this);" class="layui-field-box ' + (i == 0 ? 'layui-this' : '') + '">' + item +'</div>';
 				})
-				html += '<div class="layui-field-box layui-bg-gray" style="text-align:center;" onclick="ClearCookieName();">清空历史查询记录<i class="layui-icon" style="font-size: 30px;">&#xe640;</i></div>';
+				html += '<div class="layui-field-box layui-bg-gray" style="text-align:center;" onclick="ClearCookieName();"><i class="layui-icon" style="font-size: 18px;cursor: pointer;">清空历史查询记录&#xe640;</i></div>';
 			}
 			$('#oldNameList').html(html);
 		}
@@ -173,7 +175,7 @@
 			var list = new Array();
 			var isNew = true;
 			var cookieNames = $.cookie(cookieName);
-			if (cookieNames == null || cookieNames == 'null') {
+			if (cookieNames != null && cookieNames != 'null') {
 				list = JSON.parse(cookieNames);
 				if (list != null || list.length > 0) {
 					$.each(list, function (i,item) {
@@ -185,7 +187,7 @@
 			}
 
 			if (isNew) {
-				if (list != null)
+				if (list == null)
 					list = new Array();
 				list.push(words);
 				$.cookie(cookieName, JSON.stringify(list), { expires: 7, path: "/" });
@@ -206,23 +208,27 @@
 		}
 
 		$(function () {
-		GetCookieName();
-		GetUserData(-1);
-		$('.layui-elem-field .layui-words').click(function() {
-			$(this).addClass('layui-this').siblings().removeClass('layui-this');
-			var txt = $(this).text();
-			$('#readName').text(txt);
-		});
+			GetCookieName();
+			GetUserData(-1);
+		
+			$('#readName').focus(function () {
+				$('#oldNameList').show();
+			});
 
-		$('#readName').focus(function () {
-			$('#oldNameList').show("fast");
-		});
-
-		$('#readName').blur(function () {
-			$('#oldNameList').hide("fast");
-		});
-
+			$('#readName').blur(function () {
+				setTimeout(function () {
+					$('#oldNameList').hide();
+				},100)
+			});
+			
 	});
+
+		function SelecthistoryWords(obj) {
+			$(obj).addClass('layui-this').siblings().removeClass('layui-this');
+			var txt = $(obj).text();
+			$('#readName').val(txt);
+			$('#oldNameList').hide("fast");
+		}
 
 	//查看员工详细信息
 	function GetDetailMsg(id) {
@@ -372,7 +378,8 @@
                 //监听提交
                 var layId;
 				form.on('submit(search)', function (data) {
-                    var pars = data.field;
+					var pars = data.field;
+					SetCookieName(pars.realName);
                     $.ajax({
                         type: 'POST',
 						url: '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/GetUserList',
@@ -397,7 +404,8 @@
 						},
                         error: function (a, b, c) {
                         },
-                        complete: function () {
+						complete: function () {
+							GetCookieName();
                             layer.close(layId);
                         }
                     });

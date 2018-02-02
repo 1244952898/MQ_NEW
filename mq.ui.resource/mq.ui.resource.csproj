@@ -3565,6 +3565,11 @@
     <Content Include="js\AngularJs\angular-mocks.js" />
     <Content Include="js\AngularJs\angular.js" />
     <Content Include="js\AngularJs\angular.min.js" />
+    <None Include="Scripts\jquery-1.4.4-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.4.4.js" />
+    <Content Include="Scripts\jquery-1.4.4.min.js" />
+    <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
     <Content Include="Web.config" />
     <None Include="说明\说明.text" />
   </ItemGroup>

@@ -48,7 +48,7 @@ namespace mq.model.dbentity
         public virtual DbSet<T_User> T_User { get; set; }
         public virtual DbSet<T_BG_Position> T_BG_Position { get; set; }
         public virtual DbSet<T_Bg_ShortStaticField> T_Bg_ShortStaticField { get; set; }
-        public virtual DbSet<T_BG_User> T_BG_User { get; set; }
         public virtual DbSet<T_BG_ChangeUserPosition> T_BG_ChangeUserPosition { get; set; }
+        public virtual DbSet<T_BG_User> T_BG_User { get; set; }
     }
 }

@@ -31,10 +31,26 @@
 		.layui-col-md2 {
 			width: 20%;
 		}
+
+		/*员工姓名下拉框样式*/
+		.layui-elem-field {
+			width: 450px;
+			margin-left: 25px;
+			background-color: white;
+			border: 2px solid lightgrey;
+		}
+		.layui-elem-field .layui-this {
+			background-color: #5FB878 !important;
+			color: #fff !important;
+		}
+		.layui-elem-field .layui-field-box:hover {
+			background-color: #f2f2f2;
+		}
 	</style>
 	@*这个放入单独测试这个页面打开*@
 	@*@Styles.Render("~/libs/layui-2.0/css/layui")
 	@Scripts.Render("~/js/jquery", "~/libs/layui-2.0/layui")*@
+	@Scripts.Render("~/Scripts/jquery.cookie-1.4.1.min")
 </head>
 <body>
 	<div class="" style="margin-left: 0px;">
@@ -75,12 +91,16 @@
 				<div class="layui-col-md3">
 					<div class="layui-form-item">
 						<div class="layui-inline">
-							<div class="layui-input-inline" style="margin-right:0;margin-left: 25px;">
-								<input type="tel" name="realName" autocomplete="off" class="layui-input">
+							<div class="layui-input-inline" style="margin-right:0;margin-left: 25px;margin-bottom: 3px;">
+								<input type="tel" name="realName" autocomplete="off" class="layui-input" id="readName">
 							</div>
 							<label class="layui-form-label" style="padding-left: 5px;">员工姓名</label>
+							<fieldset class="layui-elem-field" id="oldNameList" style="display:none">
+								
+							</fieldset>
 						</div>
 					</div>
+
 				</div>
 				<div class="layui-col-md1">
 					<button class="layui-btn" lay-submit="" lay-filter="search">查 找</button>
@@ -93,6 +113,7 @@
 					<input type="button" class="layui-btn layui-bg-gray" onclick="GetUserData(3);" value="已离职员工" />
 				</div>
 			</form>
+
 		</div>
 		<div class="layui-row layui-form">
 			<table class="layui-table">
@@ -129,8 +150,78 @@
 		</div>
 	</div>
 	<script>
-	$(function () {
+		var cookieName = "recentlySearchName";
+		//读取cookie里的名字
+		function GetCookieName() {
+			var list = new Array();
+			var cookieNames = $.cookie(cookieName);
+			var html=''
+			if (cookieNames == null) {
+				html = '<div class="layui-field-box" style="color:#999">没有历史记录</div>';
+			} else {
+				list = JSON.stringify(cookieNames);
+				$.each(list, function (i,item) {
+					html += '<div class="layui-field-box layui-words' + (i == 0 ? 'layui-this' : '') + '">' + item +'</div>';
+				})
+				html += '<div class="layui-field-box layui-bg-gray" style="text-align:center;" onclick="ClearCookieName();">清空历史查询记录<i class="layui-icon" style="font-size: 30px;">&#xe640;</i></div>';
+			}
+			$('#oldNameList').html(html);
+		}
+
+		//设置历史记录cookie里的名字
+		function SetCookieName(words) {
+			var list = new Array();
+			var isNew = true;
+			var cookieNames = $.cookie(cookieName);
+			if (cookieNames == null || cookieNames == 'null') {
+				list = JSON.parse(cookieNames);
+				if (list != null || list.length > 0) {
+					$.each(list, function (i,item) {
+						if (item == words) {
+							isNew = false;
+						}
+					})
+				}
+			}
+
+			if (isNew) {
+				if (list != null)
+					list = new Array();
+				list.push(words);
+				$.cookie(cookieName, JSON.stringify(list), { expires: 7, path: "/" });
+			}
+		}
+
+		//清空历史记录cookie里的名字
+		function ClearCookieName() {
+			var dat = new Date();
+			dat.setTime(dat.getTime() - 1);
+			var cval = $.cookie(cookieName);
+			console.log(cval);
+			if (cval != null)
+				$.cookie(cookieName, null, { path: "/" });
+
+			html = '<div class="layui-field-box" style="color:#999">没有历史记录</div>';
+			$('#oldNameList').html(html);
+		}
+
+		$(function () {
+		GetCookieName();
 		GetUserData(-1);
+		$('.layui-elem-field .layui-words').click(function() {
+			$(this).addClass('layui-this').siblings().removeClass('layui-this');
+			var txt = $(this).text();
+			$('#readName').text(txt);
+		});
+
+		$('#readName').focus(function () {
+			$('#oldNameList').show("fast");
+		});
+
+		$('#readName').blur(function () {
+			$('#oldNameList').hide("fast");
+		});
+
 	});
 
 	//查看员工详细信息

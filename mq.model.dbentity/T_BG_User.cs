@@ -39,5 +39,6 @@ namespace mq.model.dbentity
         public string Emergency { get; set; }
         public string Address { get; set; }
         public string Remark { get; set; }
+        public long Lvl { get; set; }
     }
 }

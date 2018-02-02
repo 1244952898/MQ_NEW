@@ -26,6 +26,7 @@ namespace koala.application.common
         public static string LoginCookiebgUserPositionId { get { return "Login_Cookies_bgUserPositionId"; } }
         public static string LoginCookiebgUserDepartmentId { get { return "Login_Cookies_bgUserDepartmentId"; } }
         public static string LoginCookiebgUserAreaId { get { return "Login_Cookies_bgUserAreaId"; } }
+        public static string LoginCookiebgUserLvl { get { return "Login_Cookies_bgUserLvl"; } }
 
 
 		/// <summary>

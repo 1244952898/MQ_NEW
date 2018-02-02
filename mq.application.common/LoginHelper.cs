@@ -73,6 +73,14 @@ namespace mq.application.common
 			get { return CookieHelper.GetCookie(CommonVariables.LoginCookiebgUserShopID).ToInt(0); }
 		}
 
+		/// <summary>
+		/// 职位等级
+		/// </summary>
+		public static long Lvl
+		{
+			get { return CookieHelper.GetCookie(CommonVariables.LoginCookiebgUserLvl).ToLong(0); }
+		}
+
 		public static bool isOnline()
         {
             //if (HttpContext.Current.Session != null && HttpContext.Current.Session["UserToken"] != null) {
@@ -150,8 +158,10 @@ namespace mq.application.common
             CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserRoleID, bgUser.RoleID.ToString());
             CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserShopID, bgUser.ShopID.ToString());
             CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserPositionId, bgUser.PositionId.ToString());
-            CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserDepartmentId, bgUser.DepartmentId.ToString());
-            CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserAreaId, bgUser.AreaId.ToString());
+            CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserDepartmentId, bgUser.DepartmentId.ToString()); 
+
+			CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserAreaId, bgUser.AreaId.ToString());
+			CookieHelper.SetSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserLvl, bgUser.Lvl.ToString());
 		}
 
         public static void DelBgUserCookie()
@@ -166,6 +176,7 @@ namespace mq.application.common
             CookieHelper.DelSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserPositionId);
             CookieHelper.DelSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserDepartmentId);
             CookieHelper.DelSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserAreaId);
+            CookieHelper.DelSessionCookie(SessionDomain, CommonVariables.LoginCookiebgUserLvl);
 
 			CookieHelper.Del(CommonVariables.LoginCookiebgUserID);
             CookieHelper.Del(CommonVariables.LoginCookiebgUserID);
@@ -178,6 +189,7 @@ namespace mq.application.common
             CookieHelper.Del(CommonVariables.LoginCookiebgUserPositionId);
             CookieHelper.Del(CommonVariables.LoginCookiebgUserDepartmentId);
             CookieHelper.Del(CommonVariables.LoginCookiebgUserAreaId);
+            CookieHelper.Del(CommonVariables.LoginCookiebgUserLvl);
 
 			if (HttpContext.Current.Session != null)
             {

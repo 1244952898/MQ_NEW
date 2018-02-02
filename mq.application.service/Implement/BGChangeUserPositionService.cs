@@ -31,7 +31,7 @@ namespace mq.application.service.Implement
 			}
 		}
 
-		public T_BG_ChangeUserPosition Get(long id)
+		public T_BG_ChangeUserPosition GetByUserId(long id)
 		{
 			try
 			{
@@ -47,5 +47,32 @@ namespace mq.application.service.Implement
 			
 		}
 
+		public T_BG_ChangeUserPosition GetByChangeUserPositionId(long id)
+		{
+			try
+			{
+				PredicateGroup pmain = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+				pmain.Predicates.Add(Predicates.Field<T_BG_ChangeUserPosition>(f => f.Id, Operator.Eq, id));
+				pmain.Predicates.Add(Predicates.Field<T_BG_ChangeUserPosition>(f => f.IsDel, Operator.Eq, 0));
+				return _iBGChangeUserPositionRepository.GetModel(pmain);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+
+		}
+
+		public bool Update(T_BG_ChangeUserPosition changeUserPosition) {
+			try
+			{
+				bool result = _iBGChangeUserPositionRepository.Update(changeUserPosition);
+				return result;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 	}
 }

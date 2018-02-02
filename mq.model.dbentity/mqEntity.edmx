@@ -259,6 +259,7 @@
           <Property Name="Emergency" Type="nvarchar" MaxLength="100" />
           <Property Name="Address" Type="nvarchar" MaxLength="200" />
           <Property Name="Remark" Type="nvarchar" MaxLength="200" />
+          <Property Name="Lvl" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="T_User">
           <Key>
@@ -578,8 +579,8 @@
           <EntitySet Name="T_User" EntityType="POSModel.T_User" />
           <EntitySet Name="T_BG_Position" EntityType="POSModel.T_BG_Position" />
           <EntitySet Name="T_Bg_ShortStaticField" EntityType="POSModel.T_Bg_ShortStaticField" />
-          <EntitySet Name="T_BG_User" EntityType="POSModel.T_BG_User" />
           <EntitySet Name="T_BG_ChangeUserPosition" EntityType="POSModel.T_BG_ChangeUserPosition" />
+          <EntitySet Name="T_BG_User" EntityType="POSModel.T_BG_User" />
         </EntityContainer>
         <EntityType Name="T_BG_LoginLog">
           <Key>
@@ -937,6 +938,23 @@
           <Property Name="Type" Type="Int32" Nullable="false" />
           <Property Name="Sort" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="T_BG_ChangeUserPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="OldAreaId" Type="Int64" Nullable="false" />
+          <Property Name="OldShopId" Type="Int64" Nullable="false" />
+          <Property Name="NewAreaId" Type="Int64" Nullable="false" />
+          <Property Name="NewShopId" Type="Int64" Nullable="false" />
+          <Property Name="AddTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsDel" Type="Int32" Nullable="false" />
+          <Property Name="PassUserId" Type="Int64" Nullable="false" />
+          <Property Name="PassUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PassDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+        </EntityType>
         <EntityType Name="T_BG_User">
           <Key>
             <PropertyRef Name="ID" />
@@ -966,23 +984,7 @@
           <Property Name="Emergency" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Remark" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="T_BG_ChangeUserPosition">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int64" Nullable="false" />
-          <Property Name="OldAreaId" Type="Int64" Nullable="false" />
-          <Property Name="OldShopId" Type="Int64" Nullable="false" />
-          <Property Name="NewAreaId" Type="Int64" Nullable="false" />
-          <Property Name="NewShopId" Type="Int64" Nullable="false" />
-          <Property Name="AddTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsDel" Type="Int32" Nullable="false" />
-          <Property Name="PassUserId" Type="Int64" Nullable="false" />
-          <Property Name="PassUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="PassDateTime" Type="DateTime" Precision="3" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Lvl" Type="Int64" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1360,9 +1362,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="T_BG_ChangeUserPosition">
+            <EntityTypeMapping TypeName="POSModel.T_BG_ChangeUserPosition">
+              <MappingFragment StoreEntitySet="T_BG_ChangeUserPosition">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PassDateTime" ColumnName="PassDateTime" />
+                <ScalarProperty Name="PassUserName" ColumnName="PassUserName" />
+                <ScalarProperty Name="PassUserId" ColumnName="PassUserId" />
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="NewShopId" ColumnName="NewShopId" />
+                <ScalarProperty Name="NewAreaId" ColumnName="NewAreaId" />
+                <ScalarProperty Name="OldShopId" ColumnName="OldShopId" />
+                <ScalarProperty Name="OldAreaId" ColumnName="OldAreaId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="T_BG_User">
             <EntityTypeMapping TypeName="POSModel.T_BG_User">
               <MappingFragment StoreEntitySet="T_BG_User">
+                <ScalarProperty Name="Lvl" ColumnName="Lvl" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Emergency" ColumnName="Emergency" />
@@ -1388,24 +1409,6 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="T_BG_ChangeUserPosition">
-            <EntityTypeMapping TypeName="POSModel.T_BG_ChangeUserPosition">
-              <MappingFragment StoreEntitySet="T_BG_ChangeUserPosition">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="PassDateTime" ColumnName="PassDateTime" />
-                <ScalarProperty Name="PassUserName" ColumnName="PassUserName" />
-                <ScalarProperty Name="PassUserId" ColumnName="PassUserId" />
-                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
-                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
-                <ScalarProperty Name="NewShopId" ColumnName="NewShopId" />
-                <ScalarProperty Name="NewAreaId" ColumnName="NewAreaId" />
-                <ScalarProperty Name="OldShopId" ColumnName="OldShopId" />
-                <ScalarProperty Name="OldAreaId" ColumnName="OldAreaId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

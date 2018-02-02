@@ -13,12 +13,13 @@ using mq.model.viewentity.employeebg;
 using mq.model.extendedentity;
 using mq.application.webmvc;
 using mq.model.extendedentity.employeebg;
+using log4net;
 
 namespace mq.ui.employeebg.Controllers
 {
     public class UserController : Controller
     {
-		
+		ILog logger = log4net.LogManager.GetLogger(typeof(DisplayGuideApiController));
 		private readonly IBgRoleService _bgRoleService;
         private readonly IBgAreaService _areaService;
         private readonly IBgShopService _bgShopService;
@@ -131,8 +132,17 @@ namespace mq.ui.employeebg.Controllers
 					return Json(json);
 				}
 			}
-			
-            user.RealName = realname;
+
+			T_BG_Position p=_bgPositionService.GetByPositionId(positionId);
+
+			if (p==null)
+			{
+				json.ErrorCode = "E003";
+				json.ErrorMessage = "未获得该修改员工职位信息！";
+				return Json(json);
+			}
+
+			user.RealName = realname;
             user.Gender = gender;
             user.PositionId = positionId;
             user.EntryDate = entryDate;
@@ -145,6 +155,7 @@ namespace mq.ui.employeebg.Controllers
 			user.Emergency = emergency;
 			user.Address = address;
 			user.Remark = remark;
+			user.Lvl = p.Lvl;
 
 			bool result = false;
 			if (add==0)
@@ -308,7 +319,7 @@ namespace mq.ui.employeebg.Controllers
 				ViewBag.errorCode = "E001";
 				ViewBag.errorMessage = position == null?"登录用户发生未知错误！":"您无权审核员工调动！";
 			}
-			List<BgChangeUserPositionExtend> list = _bgChangeUserPositionExtendService.GetList(positionId, position.Lvl);
+			List<BgChangeUserPositionExtend> list = _bgChangeUserPositionExtendService.GetList(position.DepartmentId, position.Lvl);
 			return View("~/Views/User/CheckPositionForMainPage.cshtml",list);
 		}
 	}

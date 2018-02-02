@@ -3,6 +3,7 @@
 }
 @model List< mq.model.extendedentity.employeebg.BgChangeUserPositionExtend >
 @using System.Web.Optimization
+@using mq.application.webmvc
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,12 +20,12 @@
 					<col width="80">
 					<col width="100">
 					<col width="100">
-					<col width="100">
+					<col width="140">
 					<col width="200">
 					<col width="200">
 					<col width="200">
 					<col width="200">
-					<col width="100">
+					<col width="140">
 					<col width="100">
 				</colgroup>
 				<thead>
@@ -47,15 +48,30 @@
 						for (int i = 0; i < Model.Count; i++)
 						{
 							<tr>
-								<td>[@i]</td>
+								<td>@(i+1)</td>
 								<td>@Model[i].UserName</td>
+								<td>@Model[i].PositionName</td>
 								<td>@Model[i].UserAddTime</td>
 								<td>@Model[i].OldAreaId</td>
 								<td>@Model[i].OldShopName</td>
 								<td>@Model[i].NewAreaName</td>
 								<td>@Model[i].NewShopName</td>
 								<td>@Model[i].AddTime</td>
-								<td><input type="button" class="layui-btn layui-btn-xs" value="调动审核" onclick="layui.EnsureCheck('@Model[i].UserName','@Model[i].Id');" /></td>
+								<td>
+									@if (Model[i].Status == 0)
+									{
+										<input type="button" class="layui-btn layui-btn-xs" value="调动审核" onclick="layui.EnsureCheck('@Model[i].UserName','@Model[i].NewShopName','@Model[i].Id');" />
+									}
+									else if (Model[i].Status==1)
+									{
+										<input type="button" class="layui-btn layui-btn-xs layui-bg-gray" value="调动完成" />
+									}
+									else
+									{
+										<input type="button" class="layui-btn layui-btn-xs layui-bg-gray" value="已被拒绝" />
+									}
+								</td>
+							
 							</tr>
 						}
 					}
@@ -67,16 +83,55 @@
 
 		layui.define(['layer'], function (EnsureCheck) {
 			var layer = layui.layer;
-			EnsureCheck('EnsureCheck', function (name,id) {
-				layer.confirm('是否允许对员工【' + name+'】的调动？', {
-					btn: ['确认', '拒绝调动'] //可以无限个按钮
-					, function(index, layero) {
-						alert(id)
+			EnsureCheck('EnsureCheck', function (name, shopname, id) {
 
-				}, function (index) {
-					
-				})
+				layer.confirm('是否允许对员工【' + name + '】的调动到店铺【' + shopname + '】？', {
+					btn: ['确认接受', '拒绝接受'] //可以无限个按钮
+					, btn2: function (index, layero) {
+						ChangeData(id, 0);
+					}
+				}, function (index, layero) {
+					ChangeData(id, 1);
+				});
+
+
+				//layer.confirm('是否允许对员工【' + name + '】的调动到店铺【' + shopname + '】？', {
+				//	btn: ['确认接受', '拒绝接受'] //可以无限个按钮
+				//	, function(index, layero) {
+				//		alert(1);
+				//		ChangeData(id, 1);
+				//	}, function(index) {
+				//		alert(1);
+				//		ChangeData(id, 0);
+				//		return false; //开启该代码可禁止点击该按钮关闭
+				//	}
+				//});
 			});
+
+			function ChangeData(id, status) {
+				var url = '@(DomainUrlHelper.EmployeeBgPath)/api/UserApi/EnsureChangePosition?id=' + id + '&status=' + status;
+				var layId;
+				$.ajax({
+					type: 'POST',
+					url: url,
+					beforeSend: function () {
+						layId = layer.load(2);
+					},
+					success: function (data) {
+						if (data.ErrorCode == "E000") {
+							layer.msg('员工调动完成!', {time:1000}, function() {
+								window.location.reload();
+							});
+						} else {
+							layer.msg(data.ErrorMessage);
+						}
+					},
+					complete: function () {
+						layer.close(layId);
+					}
+				});
+			}
+
 		});
 	</script>
 </body>
